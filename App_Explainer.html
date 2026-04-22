@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Explainer, Testing Guide & Sample Cases</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 40px 20px; background-color: #fcfcfc; }
+        h1 { color: #222; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        h2 { margin-top: 30px; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #222; }
+        h3 { color: #444; }
+        .highlight { background-color: #f4f4f4; padding: 15px; border-left: 4px solid #000; border-radius: 4px; margin-bottom: 20px; }
+        .red-text { color: #d32f2f; font-weight: bold; }
+        .blue-text { color: #2980b9; font-weight: bold; }
+        .risk-high { color: #d32f2f; font-weight: 800; font-size: 1.2rem; }
+        .risk-medium { color: #f59e0b; font-weight: 800; font-size: 1.2rem; }
+        .risk-low { color: #10b981; font-weight: 800; font-size: 1.2rem; }
+        ul { margin-top: 0; }
+        .reference-list { font-size: 0.9rem; color: #666; margin-top: 50px; border-top: 1px solid #ccc; padding-top: 20px; }
+        .reference-list p { margin-bottom: 5px; text-indent: -20px; padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>App Explainer & Testing Guide</h1>
+    <p>This document explains how to evaluate the Necrotizing Fasciitis Mortality Predictor mobile application.</p>
+    <p><strong>Repository:</strong> <a href="https://github.com/jpg123/NF-mortality-calculator">https://github.com/jpg123/NF-mortality-calculator</a></p>
+
+    <div class="highlight" style="border-left-color: #2980b9; background-color: #eaf2f8;">
+        <strong>Device Compatibility:</strong> The application is built as a responsive HTML tool. You can open <code>NF_Mortality_Predictor.html</code> locally on your <strong>desktop computer</strong> or transfer the file to run directly within the web browser native to your <strong>mobile phone</strong> (iOS/Android). In addition, you can toggle between <strong>Dark Mode and Light Mode</strong> using the selector in the upper right-hand corner of the app interface.
+    </div>
+
+    <h2>How to Use the App</h2>
+    <ol>
+        <li><strong>Access the App:</strong> Open the <code>NF_Mortality_Predictor.html</code> file provided in this folder.</li>
+        <li><strong>Review Clinical Disclaimer:</strong> Read and acknowledge that the tool is an investigational prognostic algorithm utilizing an XGBoost machine learning model.</li>
+        <li><strong>Data Entry:</strong> The app is configured exactly as a physician might interact with it during triage. The inputs are natively blank. Populate the laboratory fields and clinical checklists according to the sample cases below.</li>
+        <li><strong>Processing & Output:</strong> Upon pressing "Calculate Risk," local calculations trigger. You will see a probability output and the SHAP Force Plot.</li>
+    </ol>
+
+    <h2>Sample Testing Scenarios</h2>
+    <p>To validate the app logic, we have provided two extreme testing phenotypes. Enter the values precisely to simulate the corresponding risk profile:</p>
+
+    <div class="grid">
+        <div class="case-card">
+            <h3>Test Case 1: High-Risk Presentation</h3>
+            <p><em>Simulates aggressive systemic physiological failure.</em></p>
+            <ul>
+                <li><strong>Age:</strong> 65</li>
+                <li><strong>Sex:</strong> Male</li>
+                <li><strong>Location:</strong> Rural</li>
+                <li><strong>WBC:</strong> 3.5 <em>(Severe leukopenia)</em></li>
+                <li><strong>Urea:</strong> 18.0</li>
+                <li><strong>Platelets:</strong> 120</li>
+                <li><strong>Albumin:</strong> 22</li>
+                <li><strong>Glucose:</strong> 11.5</li>
+                <li><strong>Hemoglobin:</strong> 90</li>
+                <li><strong>Renal Disease:</strong> Checked [X]</li>
+                <li><strong>Cardiovascular Disease:</strong> Checked [X]</li>
+                <li><strong>Multifocal:</strong> [X] Selected</li>
+                <li><strong>ICU Admission:</strong> [X] Selected</li>
+            </ul>
+            <p><strong>Expected Output:</strong> <span class="risk-high">~75% Mortality Risk</span></p>
+            <p><small>The Force Plot will show massive <span class="red-text">RED (positive)</span> bars, predominantly driven by the Multifocal, ICU, and low WBC variables.</small></p>
+        </div>
+
+        <div class="case-card">
+            <h3>Test Case 2: Low-Risk Presentation</h3>
+            <p><em>Simulates a medically stable, unifocal infection.</em></p>
+            <ul>
+                <li><strong>Age:</strong> 45</li>
+                <li><strong>Sex:</strong> Female</li>
+                <li><strong>Location:</strong> Urban</li>
+                <li><strong>WBC:</strong> 12.0</li>
+                <li><strong>Urea:</strong> 6.0</li>
+                <li><strong>Platelets:</strong> 250</li>
+                <li><strong>Albumin:</strong> 36</li>
+                <li><strong>Glucose:</strong> 5.5</li>
+                <li><strong>Hemoglobin:</strong> 130</li>
+                <li><strong>Renal Disease:</strong> Unchecked [ ]</li>
+                <li><strong>Multifocal:</strong> [ ] Unchecked (Unifocal Selected)</li>
+                <li><strong>ICU Admission:</strong> Unchecked [ ]</li>
+            </ul>
+            <p><strong>Expected Output:</strong> <span class="risk-low">&lt;1% Mortality Risk</span></p>
+            <p><small>The Force Plot will show virtually no red bars. Strong <span class="blue-text">BLUE (protective)</span> forces from normal Hb and Albumin will keep the risk marginalized.</small></p>
+        </div>
+    </div>
+
+    <h2>What is a "Force Plot"?</h2>
+    <p>A predictive algorithm traditionally operates as a "black box": it outputs a percentage but provides zero context as to <em>why</em>. In clinical fields like surgery, black box recommendations are often ignored because doctors cannot rapidly trust reasoning they cannot biologically translate.</p>
+
+    <p>A <strong>Force Plot</strong> solves this by using SHapley Additive exPlanations (SHAP). It functions essentially like a tug-of-war logic tree:</p>
+
+    <div class="highlight">
+        <h3>Visualizing the Tug-of-War</h3>
+        <ul>
+            <li><strong>The Baseline:</strong> Every patient starts at a mathematical baseline risk representing the "average" patient across a 21-year registry.</li>
+            <li><strong>Positive Forces (Pushing Risk Higher):</strong> Features like "Multifocal Involvement" or "Cardiovascular Disease" align with physiological failure. They push the algorithm towards extreme mortality markers. These are represented by <span class="red-text">RED</span> bars.</li>
+            <li><strong>Negative Forces (Protective Qualities):</strong> Features like "Normal Hemoglobin" assert negative mathematical force. These values inherently lower mortality risk relative to the state of other tissues. These are represented by <span class="blue-text">BLUE</span> bars.</li>
+        </ul>
+    </div>
+
+    <div class="reference-list">
+        <h2>References</h2>
+        <p>1. Lundberg SM, Erion G, Chen H, et al. From local explanations to global understanding with explainable AI for trees. Nat Mach Intell. 2020;2(1):56-67.</p>
+        <p>2. Kim S, Kim M, Park J, et al. Development of a machine learning-based clinical decision support system for predicting hospital mortality. Sci Rep. 2021;11(1):16183.</p>
+    </div>
+
+</body>
+</html>

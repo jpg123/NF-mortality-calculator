@@ -1,0 +1,135 @@
+{
+  "model_metadata": {
+    "version": "1.1.0",
+    "last_updated": "2026-04-12",
+    "calibration_intercept": -6.4,
+    "description": "Logit-based mortality prediction model for Necrotizing Fasciitis based on provincial registry data."
+  },
+  "coefficients": [
+    {
+      "id": "multifocal",
+      "label": "Multifocal Involvement",
+      "weight": 1.91,
+      "or": 6.76,
+      "category": "Primary Drivers"
+    },
+    {
+      "id": "icu",
+      "label": "ICU Admission",
+      "weight": 1.65,
+      "or": 5.21,
+      "category": "Acuity Markers"
+    },
+    {
+      "id": "renal",
+      "label": "Renal Disease",
+      "weight": 0.95,
+      "or": 2.58,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "urea",
+      "label": "Urea > 15 mmol/L",
+      "weight": 0.16,
+      "or": 1.17,
+      "category": "Laboratory"
+    },
+    {
+      "id": "wbc_extreme",
+      "label": "WBC < 4 or > 25",
+      "weight": 0.65,
+      "or": 1.91,
+      "category": "Laboratory"
+    },
+    {
+      "id": "albumin_low",
+      "label": "Albumin < 25 g/L",
+      "weight": 0.50,
+      "or": 1.65,
+      "category": "Laboratory"
+    },
+    {
+      "id": "hb_low",
+      "label": "Hemoglobin < 100 g/L",
+      "weight": 0.40,
+      "or": 1.49,
+      "category": "Laboratory"
+    },
+    {
+      "id": "diabetes",
+      "label": "Diabetes Mellitus",
+      "weight": 0.40,
+      "or": 1.49,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "cvd",
+      "label": "Cardiovascular Disease",
+      "weight": 0.31,
+      "or": 1.36,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "age_60",
+      "label": "Age > 60 years",
+      "weight": 0.07,
+      "or": 1.07,
+      "category": "Demographics"
+    },
+    {
+      "id": "transfusion",
+      "label": "Transfusion Requirement",
+      "weight": -0.21,
+      "or": 0.81,
+      "category": "Acuity Markers"
+    },
+    {
+      "id": "hb_normal",
+      "label": "Normal Hemoglobin",
+      "weight": -0.30,
+      "or": 0.74,
+      "category": "Laboratory"
+    },
+    {
+      "id": "alb_normal",
+      "label": "Normal Albumin",
+      "weight": -0.20,
+      "or": 0.82,
+      "category": "Laboratory"
+    },
+    {
+      "id": "glucose_high",
+      "label": "Glucose > 10.0 mmol/L",
+      "weight": 0.28,
+      "or": 1.32,
+      "category": "Laboratory"
+    },
+    {
+      "id": "platelets_low",
+      "label": "Platelets < 150",
+      "weight": 0.20,
+      "or": 1.22,
+      "category": "Laboratory"
+    }
+  ],
+  "triage_thresholds": [
+    {
+      "level": "CRITICAL",
+      "min": 0.50,
+      "color": "#000000",
+      "message": "CRITICAL RISK. High probability of mortality. Immediate surgical debridement and ICU escalation indicated."
+    },
+    {
+      "level": "ELEVATED",
+      "min": 0.15,
+      "color": "#333333",
+      "message": "ELEVATED RISK. Patient requires close surgical monitoring and aggressive therapy. High disease burden suspected."
+    },
+    {
+      "level": "BASELINE",
+      "min": 0.00,
+      "color": "#666666",
+      "message": "BASELINE RISK. Standard clinical care pathway recommended. Monitor for changes in acuity markers."
+    }
+  ]
+}
