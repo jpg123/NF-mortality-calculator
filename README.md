@@ -40,7 +40,7 @@ To run the predictive dashboard locally:
 1. Clone this repository.
 2. Open `index.html` in any modern web browser.
 3. No dependencies or `pip install` required for the dashboard itself.
-4. Use `NF_Mortality_Predictor.html` as the app file when sharing the tool.
+4. Use `NF-mortality-calculator.html` as the app file when sharing the tool.
 
 ### 2. PWA Installation (Mobile Device)
 The application is a Progressive Web App (PWA):
@@ -72,6 +72,6 @@ This predictive tool is intended for research and educational purposes only. It 
 
 ## ✉️ Questions?
 If you have questions about the logic, the study, or the application, please contact:
-**[Support](mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20predictor)**
+**[Support](mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20calculator)**
 
  ---

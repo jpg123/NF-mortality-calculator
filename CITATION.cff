@@ -20,7 +20,7 @@ authors:
 title: "Predicting Mortality at Admission for Necrotizing Fasciitis: Integrating Machine Learning with Interpretable AI for Point-of-Care Risk Assessment"
 version: 1.2.0
 date-released: 2026-04-20
-url: "https://github.com/jpg123/NF_mortality_calculator"
+url: "https://github.com/jpg123/NF-mortality-calculator"
 preferred-citation:
   type: article
   authors:
