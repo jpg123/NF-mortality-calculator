@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NFMAP | NF Mortality Assessment Platform</title>
+    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='192' height='192' fill='%23000000'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial,sans-serif' font-size='90' font-weight='bold' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='central'%3ENF%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='192' height='192' fill='%23000000'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial,sans-serif' font-size='90' font-weight='bold' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='central'%3ENF%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NFMAP">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="NFMAP">
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #000000;
+            --text-muted: #666666;
+            --border: #000000;
+            --success: #333333;
+            --danger: #000000;
+            --uom-blue: #000000;
+            --uom-gold: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
+        }
+
+        input, select, button, textarea {
+            font-family: inherit;
+        }
+
+        html, body {
+            background: #000;
+        }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        body.dark-theme {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --text-muted: #aaaaaa;
+            --border: #555555;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        body.glass-theme {
+            --bg: radial-gradient(circle at top left, rgba(116, 182, 255, 0.26), transparent 28%),
+                  radial-gradient(circle at 85% 10%, rgba(110, 220, 255, 0.22), transparent 22%),
+                  radial-gradient(circle at 20% 90%, rgba(180, 120, 255, 0.16), transparent 25%),
+                  linear-gradient(135deg, #eef6ff 0%, #d8e8f8 55%, #c8dff5 100%);
+            --card-bg: rgba(255, 255, 255, 0.18);
+            --text: #0e1f33;
+            --text-muted: #49617f;
+            --border: rgba(255, 255, 255, 0.5);
+            background: var(--bg);
+            color: var(--text);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body.glass-theme::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.16) 70%, rgba(255, 255, 255, 0.04)),
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.32), transparent 35%);
+            mix-blend-mode: screen;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.025em;
+            color: #000;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid #000;
+            border-radius: 0;
+            padding: 1.5rem;
+            box-shadow: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 0;
+            padding: 0.75rem 1rem;
+            color: #000;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            background: #f0f0f0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .toggle-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .toggle-item {
+            position: relative;
+        }
+
+        .toggle-item input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .toggle-label {
+            display: block;
+            padding: 0.75rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 0;
+            text-align: center;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .toggle-item input:checked + .toggle-label {
+            background: #000;
+            color: #fff;
+        }
+
+        #theme-toggle,
+        #glass-toggle {
+            position: absolute;
+            top: 0;
+            width: 84px;
+            padding: 5px 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: 2px solid var(--border);
+        }
+
+        #theme-toggle {
+            right: 0;
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        #glass-toggle {
+            right: 96px;
+            background: transparent;
+            color: var(--text);
+        }
+
+        #theme-toggle,
+        #glass-toggle {
+            position: absolute;
+            top: 0;
+            width: 84px;
+            padding: 5px 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: 2px solid var(--border);
+        }
+
+        #theme-toggle {
+            right: 0;
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        #glass-toggle {
+            right: 96px;
+            background: transparent;
+            color: var(--text);
+        }
+
+        button.submit-btn {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            border: 2px solid #000;
+            border-radius: 0;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        button.submit-btn:hover {
+            background: #333;
+        }
+
+        #results {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .probability-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .probability-label {
+            font-size: 0.875rem;
+            color: #000;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .progress-bar {
+            height: 1rem;
+            background: #eee;
+            border: 2px solid #000;
+            border-radius: 0;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #000;
+            transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .triage-message {
+            background: #f9f9f9;
+            border: 2px solid #000;
+            padding: 1.25rem;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .drivers-list {
+            margin-top: 2rem;
+        }
+
+        .driver-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .driver-name {
+            flex: 1;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .driver-bar-bg {
+            width: 100px;
+            height: 0.5rem;
+            background: #eee;
+            border: 1px solid #000;
+            margin-left: 1rem;
+            overflow: hidden;
+        }
+
+        .driver-bar-fill {
+            height: 100%;
+            background: #000;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.75rem;
+            color: #333;
+            border-top: 1px solid #000;
+            width: 100%;
+        }
+
+        /* Intro Gate */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top, rgba(45,45,45,0.98), rgba(0,0,0,0.98));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            margin: 0;
+            border: 0;
+            box-sizing: border-box;
+            overflow: auto;
+            -webkit-appearance: none;
+            appearance: none;
+            color-scheme: dark;
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+
+        .intro-card {
+            background: rgba(0, 0, 0, 0.92);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+            max-width: 450px;
+            width: 100%;
+            padding: 1.25rem 1.15rem 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        .intro-continue-btn {
+            position: relative;
+            z-index: 1002;
+            width: 100%;
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.28);
+            color: #fff;
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            font-size: 0.98rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            display: block;
+            text-align: center;
+        }
+
+        .intro-continue-btn:hover {
+            background: rgba(255,255,255,0.16);
+        }
+
+        .intro-continue-btn:active {
+            transform: translateY(1px);
+        }
+
+        .intro-title {
+            font-size: 1.08rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(255,255,255,0.32);
+            padding-bottom: 0.45rem;
+        }
+
+        .intro-text {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin-bottom: 0.9rem;
+            color: rgba(255,255,255,0.92);
+        }
+
+        .intro-text b {
+            font-size: 0.72rem;
+            color: #fff;
+        }
+
+        .intro-text p {
+            margin: 0 0 0.6rem 0;
+        }
+
+        .intro-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .intro-screen {
+            display: grid;
+            gap: 1rem;
+            width: 100%;
+            align-content: flex-start;
+            justify-items: center;
+            min-height: 100vh;
+            padding: 1rem 1rem 8rem;
+            box-sizing: border-box;
+            isolation: isolate;
+            touch-action: manipulation;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            text-decoration: none;
+        }
+
+        .intro-screen::before {
+            content: "";
+            position: absolute;
+            inset: 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .intro-screen {
+                padding: 0.5rem;
+                gap: 0.4rem;
+                justify-content: flex-start;
+                padding-top: max(0.45rem, env(safe-area-inset-top));
+                padding-bottom: max(8rem, env(safe-area-inset-bottom));
+            }
+
+            .intro-card {
+                max-width: 100%;
+                width: calc(100% - 0.5rem);
+                padding: 0.95rem 0.85rem 0.8rem;
+                border: 0;
+                border-radius: 18px;
+                box-shadow: 0 16px 48px rgba(0,0,0,0.32);
+                background: rgba(10, 10, 12, 0.84);
+                -webkit-backdrop-filter: blur(18px);
+                backdrop-filter: blur(18px);
+            }
+
+            .intro-title {
+                font-size: 0.98rem;
+                margin-bottom: 0.65rem;
+                padding-bottom: 0.35rem;
+            }
+
+            .intro-text {
+                font-size: 0.76rem;
+                line-height: 1.42;
+                margin-bottom: 0.7rem;
+            }
+
+            .intro-hit-area {
+                width: 100%;
+                padding: 0;
+            }
+
+        }
+
+        .intro-hint {
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.9;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .intro-card button,
+        .toggle-label {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .intro-hit-area {
+            width: min(100%, 520px);
+            padding: 0 0.5rem;
+        }
+
+        .intro-text {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .hidden { display: none; }
+
+        .app-content {
+            display: block;
+            width: 100%;
+        }
+
+        .gate-toggle {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gate-toggle:not(:checked) ~ .intro-screen {
+            display: flex;
+        }
+
+        .gate-toggle:checked ~ .intro-screen {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        input {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 0;
+        }
+
+
+
+        /* Dark Mode Overrides */
+        body.dark-theme {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --text-muted: #aaaaaa;
+            --border: #555555;
+            background: var(--bg);
+            color: var(--text);
+        }
+        body.dark-theme h1, body.dark-theme label, body.dark-theme .intro-title, body.dark-theme .driver-name, body.dark-theme .probability-label, body.dark-theme a, body.dark-theme .footer,
+        body.glass-theme h1, body.glass-theme label, body.glass-theme .intro-title, body.glass-theme .driver-name, body.glass-theme .probability-label, body.glass-theme a, body.glass-theme .footer {
+            color: var(--text) !important;
+        }
+        body.dark-theme header, body.dark-theme .footer, body.dark-theme .intro-title,
+        body.glass-theme header, body.glass-theme .footer, body.glass-theme .intro-title {
+            border-color: var(--border) !important;
+        }
+        body.dark-theme .card, body.dark-theme input[type="number"], body.dark-theme select, body.dark-theme .toggle-label, body.dark-theme .triage-message, body.dark-theme .progress-bar, body.dark-theme .driver-bar-bg,
+        body.glass-theme .card, body.glass-theme input[type="number"], body.glass-theme select, body.glass-theme .toggle-label, body.glass-theme .triage-message, body.glass-theme .progress-bar, body.glass-theme .driver-bar-bg {
+            border-color: var(--border) !important;
+            background: var(--card-bg) !important;
+            color: var(--text) !important;
+        }
+        body.dark-theme input[type="number"]:focus, body.dark-theme select:focus,
+        body.glass-theme input[type="number"]:focus, body.glass-theme select:focus {
+            background: #2a2a2a !important;
+        }
+        body.dark-theme .toggle-item input:checked + .toggle-label, body.dark-theme button.submit-btn,
+        body.glass-theme .toggle-item input:checked + .toggle-label, body.glass-theme button.submit-btn {
+            background: var(--text) !important;
+            color: var(--bg) !important;
+            border-color: var(--text) !important;
+        }
+        body.dark-theme .driver-bar-fill,
+        body.glass-theme .driver-bar-fill {
+            background: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="gate-toggle" class="gate-toggle" aria-hidden="true">
+    <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+        <div class="intro-hit-area">
+            <div class="intro-card animate-fade-in" id="intro-card">
+                <div class="intro-title" id="intro-title">Clinical Research Disclosure</div>
+                <div class="intro-text">
+                    <p>This predictive tool is a <b>Machine Learning (ML) research implementation</b> developed as part of a Canadian provincial study on Necrotizing Fasciitis mortality outcomes.</p>
+                    <p><b>Investigational Status:</b> This application and the underlying XGBoost model are intended for <b>research and educational purposes only.</b> It has not been approved by Health Canada or the FDA for diagnostic or treatment use.</p>
+                    <p><b>Clinical Judgment:</b> Predictions should NOT be used to direct individual patient care, surgical timing, or resource prioritization. Outcomes are based on provincial registry retrospective data and represent statistical probabilities for a specific cohort.</p>
+                    <p><b>Data Privacy:</b> No patient-identifiable data is transmitted. All calculations occur locally on this device.</p>
+                </div>
+            </div>
+        </div>
+        <label for="gate-toggle" class="intro-continue-btn" style="position: fixed; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: 520px; z-index: 1002; pointer-events: auto;">Continue</label>
+    </div>
+
+    <div class="container app-content" id="main-content">
+        <header style="position: relative;">
+            <h1 style="text-align: left; line-height: 1.2; letter-spacing: -0.01em;">
+                NFMAP<br>
+                <span style="font-weight: 300;">NF Mortality Assessment Platform</span>
+            </h1>
+            <button id="theme-toggle" type="button">Dark Mode</button>
+            <button id="glass-toggle" type="button">Glass Mode</button>
+        </header>
+
+        <form id="input-form" class="card">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="age">Age (Years)</label>
+                    <input type="number" id="age" required>
+                </div>
+                <div class="form-group">
+                    <label for="wbc">WBC (x10⁹/L)</label>
+                    <input type="number" id="wbc" step="0.1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Sex</label>
+                <div class="toggle-group" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="toggle-item">
+                        <input type="radio" id="male" name="sex" value="male" required>
+                        <label for="male" class="toggle-label">Male</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="radio" id="female" name="sex" value="female" required>
+                        <label for="female" class="toggle-label">Female</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="radio" id="sex_unknown" name="sex" value="unknown" required checked>
+                        <label for="sex_unknown" class="toggle-label">Unknown</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="urea">Urea (mmol/L)</label>
+                    <input type="number" id="urea" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="platelets">Platelets (x10<sup>9</sup>/L)</label>
+                    <input type="number" id="platelets">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="albumin">Albumin (g/L)</label>
+                    <input type="number" id="albumin">
+                </div>
+                <div class="form-group">
+                    <label for="glucose">Glucose (mmol/L)</label>
+                    <input type="number" id="glucose" step="0.1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="hemoglobin">Hemoglobin (g/L)</label>
+                <input type="number" id="hemoglobin">
+            </div>
+
+            <div class="form-group">
+                <label>Clinical History (Comorbidities)</label>
+                <div class="grid-2" style="gap: 0.75rem">
+                    <div class="toggle-item">
+                        <input type="checkbox" id="renal">
+                        <label for="renal" class="toggle-label">Renal Disease</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="diabetes">
+                        <label for="diabetes" class="toggle-label">Diabetes</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="cvd">
+                        <label for="cvd" class="toggle-label">CVD</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="substance">
+                        <label for="substance" class="toggle-label">Substance Misuse</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="smoking">
+                        <label for="smoking" class="toggle-label">Smoking History</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="obesity">
+                        <label for="obesity" class="toggle-label">Obesity</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="liver">
+                        <label for="liver" class="toggle-label">Liver Disease</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="allergies">
+                        <label for="allergies" class="toggle-label">Allergies</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Admission Presentation</label>
+                <div class="toggle-group">
+                    <div class="toggle-item">
+                        <input type="radio" id="unifocal" name="location" value="unifocal" checked>
+                        <label for="unifocal" class="toggle-label">Unifocal</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="radio" id="multifocal" name="location" value="multifocal">
+                        <label for="multifocal" class="toggle-label">Multifocal</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Acute Care Status</label>
+                <div class="grid-2" style="gap: 0.75rem">
+                    <div class="toggle-item">
+                        <input type="checkbox" id="icu">
+                        <label for="icu" class="toggle-label">ICU Admission</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="transfusion">
+                        <label for="transfusion" class="toggle-label">Transfusion</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="width: 50%;">
+                <label for="res_type">Geographic Location</label>
+                <select id="res_type">
+                    <option value="unknown" selected>Unknown</option>
+                    <option value="rural">Rural</option>
+                    <option value="urban">Urban</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn" style="margin-top: 2rem; text-transform: uppercase;">CALCULATE RISK</button>
+        </form>
+
+        <div id="results" class="card animate-fade-in">
+            <div class="result-header">
+                <div class="probability-label">Risk Level</div>
+                <div id="prob-val" class="probability-value">0%</div>
+            </div>
+
+            <div class="progress-bar">
+                <div id="prob-fill" class="progress-fill"></div>
+            </div>
+
+            <div id="triage-msg" class="triage-message">
+                Processing clinical variables...
+            </div>
+
+            <div class="drivers-list" id="drivers-container">
+                <!-- Drivers injected here -->
+            </div>
+
+            <div class="grid-2">
+                <button id="share-results-btn" type="button" class="submit-btn" style="background: #333; margin-top: 2rem; border-color: #333;">Share Results</button>
+                <button id="share-app-btn" type="button" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Share Local App</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            Standalone local file. Research and educational use only.<br><br>
+            <a href="mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20calculator" data-local-safe="true" style="color: #000; text-decoration: underline; font-weight: 700;">Support / Feedback</a> | 
+            <a href="https://github.com/jpg123/NF-mortality-calculator" data-local-safe="true" style="color: #000; text-decoration: underline; font-weight: 700;">Methods & Validation</a><br><br>
+            Reference: Gawaziuk et al. (2026). J Trauma Acute Care Surg.<br>
+            <i>Version 2026-04-20 | Licensed under Apache 2.0</i>
+        </div>
+    </div>
+    <script>
+        const studyData = {
+          "model_metadata": {
+            "version": "1.2.0",
+            "last_updated": "2026-04-20",
+            "calibration_intercept": -4.28,
+            "description": "Logit-based mortality prediction model for Necrotizing Fasciitis (n=565), validated via randomized 80/20 train-test split (n=113)."
+          },
+          "coefficients": [
+            { "id": "multifocal", "label": "Multifocal Involvement", "weight": 2.13 },
+            { "id": "icu", "label": "ICU Admission", "weight": 1.76 },
+            { "id": "renal", "label": "Renal Disease", "weight": 0.97 },
+            { "id": "cvd", "label": "Cardiovascular Disease", "weight": 0.80 },
+            { "id": "obesity", "label": "Obesity", "weight": 0.67 },
+            { "id": "liver", "label": "Liver Disease", "weight": 0.56 },
+            { "id": "allergies", "label": "Allergies", "weight": 0.28 },
+            { "id": "glucose", "label": "Glucose > 10.0 mmol/L", "weight": 0.23 },
+            { "id": "urea", "label": "Urea > 15 mmol/L", "weight": 0.22 },
+            { "id": "wbc_extreme", "label": "WBC Acuity (<4 or >25)", "weight": -0.63 }
+          ],
+          "triage_thresholds": [
+            { "level": "High Risk", "min": 0.50, "color": "#d32f2f", "message": "High Risk. High probability of mortality. Immediate surgical debridement and ICU escalation indicated." },
+            { "level": "Moderate Risk", "min": 0.15, "color": "#fbc02d", "message": "Moderate Risk. Patient requires close surgical monitoring and aggressive therapy. High disease burden suspected." },
+            { "level": "Low Risk", "min": 0.00, "color": "#388e3c", "message": "Low Risk. Standard clinical care pathway recommended. Monitor for changes in acuity markers." }
+          ]
+        };
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const glassToggle = document.getElementById('glass-toggle');
+        const gateToggle = document.getElementById('gate-toggle');
+        const mainContent = document.getElementById('main-content');
+
+        function updateThemeButtons() {
+            const dark = document.body.classList.contains('dark-theme');
+            const glass = document.body.classList.contains('glass-theme');
+            if (!glass && !dark) {
+                themeToggle.innerText = 'Dark Mode';
+                glassToggle.innerText = 'Glass Mode';
+            } else if (!glass && dark) {
+                themeToggle.innerText = 'Light Mode';
+                glassToggle.innerText = 'Glass Mode';
+            } else if (glass && !dark) {
+                themeToggle.innerText = 'Dark Mode';
+                glassToggle.innerText = 'Glass Light';
+            } else {
+                themeToggle.innerText = 'Light Mode';
+                glassToggle.innerText = 'Glass Dark';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const glass = document.body.classList.contains('glass-theme');
+            const dark = document.body.classList.contains('dark-theme');
+            if (glass) {
+                if (dark) {
+                    document.body.classList.remove('dark-theme');
+                } else {
+                    document.body.classList.add('dark-theme');
+                }
+            } else {
+                document.body.classList.toggle('dark-theme');
+            }
+            updateThemeButtons();
+        });
+
+        glassToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('glass-theme')) {
+                document.body.classList.remove('glass-theme', 'dark-theme');
+            } else {
+                document.body.classList.add('glass-theme');
+            }
+            updateThemeButtons();
+        });
+
+        // Initialize App
+        function init() {
+            // Study Data is hardcoded above for consistency with the manuscript
+            mainContent.style.display = 'block';
+            gateToggle.checked = false;
+            updateThemeButtons();
+        }
+
+        function goBack() {
+            results.style.display = 'none';
+            form.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        init();
+
+        const form = document.getElementById('input-form');
+        const results = document.getElementById('results');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Check for missing lab values to prompt user
+            const labs = ['wbc', 'urea', 'platelets', 'albumin', 'glucose', 'hemoglobin'];
+            const missing = labs.filter(id => !document.getElementById(id).value);
+            
+            if (missing.length > 0) {
+                const proceed = confirm(`Clinical Alert: ${missing.length} laboratory values are missing. The model will treat these as baseline (normal) values. Would you like to proceed with the calculation?`);
+                if (!proceed) return;
+            }
+
+            const sexInput = document.querySelector('input[name="sex"]:checked');
+            const inputs = {
+                age: parseFloat(document.getElementById('age').value) || 0,
+                sex: sexInput ? sexInput.value : 'unknown',
+                res_type: document.getElementById('res_type').value,
+                wbc: parseFloat(document.getElementById('wbc').value) || 15, // Default to normal-range if missing
+                urea: parseFloat(document.getElementById('urea').value) || 5,
+                hb: parseFloat(document.getElementById('hemoglobin').value) || 130,
+                alb: parseFloat(document.getElementById('albumin').value) || 35,
+                glucose: parseFloat(document.getElementById('glucose').value) || 5.5,
+                platelets: parseFloat(document.getElementById('platelets').value) || 250,
+                multifocal: document.getElementById('multifocal').checked,
+                icu: document.getElementById('icu').checked,
+                renal: document.getElementById('renal').checked,
+                diabetes: document.getElementById('diabetes').checked,
+                cvd: document.getElementById('cvd').checked,
+                obesity: document.getElementById('obesity').checked,
+                smoking: document.getElementById('smoking').checked,
+                substance: document.getElementById('substance').checked,
+                allergies: document.getElementById('allergies').checked,
+                liver: document.getElementById('liver').checked,
+                transfusion: document.getElementById('transfusion').checked
+            };
+
+            calculateRisk(inputs);
+        });
+
+        function calculateRisk(data) {
+            let logit = studyData.model_metadata.calibration_intercept;
+            const impacts = [];
+
+            // Primary drivers
+            if (data.multifocal) {
+                logit += 2.13;
+                impacts.push({ label: 'Multifocal Involvement', val: 2.13 });
+            }
+            if (data.icu) {
+                logit += 1.76;
+                impacts.push({ label: 'ICU Admission', val: 1.76 });
+            }
+            if (data.renal) {
+                logit += 0.97;
+                impacts.push({ label: 'Renal Disease', val: 0.97 });
+            }
+            
+            // Per-year age impact
+            const ageCoeff = 0.01;
+            logit += data.age * ageCoeff;
+            if (data.age > 60) impacts.push({ label: 'Advanced Age (>60)', val: (data.age - 60) * 0.01 + 0.60 }); // Visual proxy for impact list
+            else if (data.age > 40) impacts.push({ label: 'Age Impact', val: data.age * 0.01 });
+
+            if (data.sex === 'male') {
+                logit += 0.09;
+                impacts.push({ label: 'Sex: Male', val: 0.09 });
+            }
+
+            // Geographic drivers
+            if (data.res_type === 'rural') {
+                logit += 0.09;
+                impacts.push({ label: 'Rural Residence', val: 0.09 });
+            }
+
+            // Secondary drivers (Lab)
+            if (data.urea > 15) {
+                logit += 0.22;
+                impacts.push({ label: 'Urea > 15 mmol/L', val: 0.22 });
+            }
+            if (data.wbc > 25 || data.wbc < 4) {
+                logit -= 0.63; // Weighted model finding: WBC extreme is protective in balanced cohort
+                impacts.push({ label: 'WBC Indicator', val: -0.63 });
+            }
+            if (data.hb < 100) {
+                logit -= 0.82;
+                impacts.push({ label: 'Hb < 100 g/L', val: -0.82 });
+            }
+            if (data.alb < 25) {
+                logit -= 0.28;
+                impacts.push({ label: 'Albumin < 25 g/L', val: -0.28 });
+            }
+
+            // Additional Labs
+            if (data.glucose > 10.0) {
+                logit += 0.23;
+                impacts.push({ label: 'Glucose > 10.0 mmol/L', val: 0.23 });
+            }
+            if (data.platelets < 150) {
+                logit -= 0.42;
+                impacts.push({ label: 'Platelets < 150 x10⁹/L', val: -0.42 });
+            }
+
+            // Comorbidities
+            if (data.diabetes) {
+                logit += 0.01;
+                impacts.push({ label: 'Diabetes', val: 0.01 });
+            }
+            if (data.cvd) {
+                logit += 0.80;
+                impacts.push({ label: 'Cardiovascular Dis.', val: 0.80 });
+            }
+            if (data.obesity) {
+                logit += 0.67;
+                impacts.push({ label: 'Obesity', val: 0.67 });
+            }
+            if (data.liver) {
+                logit += 0.56;
+                impacts.push({ label: 'Liver Disease', val: 0.56 });
+            }
+            if (data.allergies) {
+                logit += 0.28;
+                impacts.push({ label: 'Allergies', val: 0.28 });
+            }
+            
+            // Protective/Other
+            if (data.smoking) {
+                logit -= 0.51;
+                impacts.push({ label: 'History of Smoking', val: -0.51 });
+            }
+            if (data.substance) {
+                logit -= 0.71;
+                impacts.push({ label: 'Substance Misuse', val: -0.71 });
+            }
+            if (data.transfusion) {
+                logit -= 0.17;
+                impacts.push({ label: 'Transfusion', val: -0.17 });
+            }
+
+            const prob = 1 / (1 + Math.exp(-logit));
+            const probPerc = Math.round(prob * 100);
+            const oddsRatio = Math.exp(logit - studyData.model_metadata.calibration_intercept);
+
+            displayResults(prob, probPerc, oddsRatio, impacts);
+        }
+
+        function displayResults(prob, perc, or, impacts) {
+            form.classList.add('hidden');
+            results.style.display = 'block';
+
+            const probVal = document.getElementById('prob-val');
+            const probFill = document.getElementById('prob-fill');
+            const triageMsg = document.getElementById('triage-msg');
+
+            probVal.innerText = perc + '%';
+            probFill.style.width = perc + '%';
+
+            // Triage Color Coding
+            let color;
+            if (perc < 15) {
+                color = '#10b981'; // Green (Low Risk)
+            } else if (perc < 50) {
+                color = '#f59e0b'; // Yellow (Moderate Risk)
+            } else {
+                color = '#ef4444'; // Red (High Risk)
+            }
+
+            probVal.style.color = color;
+            probFill.style.backgroundColor = color;
+            triageMsg.style.borderLeftColor = color;
+
+            // Find matching triage metadata
+            const triage = studyData.triage_thresholds.find(t => prob >= t.min);
+            if (triage) {
+                triageMsg.innerHTML = `<strong>${triage.level}:</strong> ${triage.message}`;
+            }
+
+            // Render Drivers (SHAP)
+            const driverContainer = document.getElementById('drivers-container');
+            driverContainer.innerHTML = '<label>Risk Drivers (Component Impact)</label>';
+            
+            const maxImpact = Math.max(...impacts.map(i => Math.abs(i.val)));
+
+            impacts.sort((a,b) => Math.abs(b.val) - Math.abs(a.val)).forEach(i => {
+                const item = document.createElement('div');
+                item.className = 'driver-item animate-fade-in';
+                
+                const width = (Math.abs(i.val) / maxImpact) * 100;
+                
+                item.innerHTML = `
+                    <div class="driver-name">${i.label}</div>
+                    <div class="driver-bar-bg">
+                        <div class="driver-bar-fill" style="width: ${width}%; background: ${i.val > 0 ? '#ef4444' : '#3b82f6'};"></div>
+                    </div>
+                `;
+                driverContainer.appendChild(item);
+            });
+        }
+
+        function shareResults() {
+            const prob = document.getElementById('prob-val').innerText;
+            const text = [
+                'NF Mortality Predictor Results',
+                `Predicted Risk: ${prob}`,
+                'Use status: Research only',
+                'Source: Standalone local file'
+            ].join('\n');
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'NF Mortality Predictor Results',
+                    text: text
+                }).catch(console.error);
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Results summary copied to clipboard.');
+                });
+            }
+        }
+
+        function shareApp() {
+            const message = [
+                'NF Mortality Predictor',
+                'Standalone local file',
+                'Open NF-mortality-calculator.html on this device to run the calculator.'
+            ].join('\n');
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'NF Mortality Predictor',
+                    text: message
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(message).then(() => {
+                    alert('App reference copied to clipboard.');
+                });
+            }
+        }
+
+        function resetApp() {
+            form.classList.remove('hidden');
+            results.style.display = 'none';
+            form.reset();
+        }
+
+    </script>
+</body>
+</html>

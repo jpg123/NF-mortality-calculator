@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>NFMAP | NF Mortality Assessment Platform</title>
     
-    <!-- PWA / iOS Support -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='192' height='192' fill='%23000000'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial,sans-serif' font-size='90' font-weight='bold' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='central'%3ENF%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='192' height='192' fill='%23000000'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial,sans-serif' font-size='90' font-weight='bold' fill='%23FFFFFF' text-anchor='middle' dominant-baseline='central'%3ENF%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="NFMAP">
-    <link rel="apple-touch-icon" href="icon.svg">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="NFMAP">
     <style>
         :root {
             --primary: #000000;
@@ -40,8 +38,12 @@
             font-family: inherit;
         }
 
+        html, body {
+            background: #000;
+        }
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
@@ -266,58 +268,214 @@
             width: 100%;
         }
 
-        /* Modal Styles */
-        .modal-overlay {
+        /* Intro Gate */
+        .intro-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: radial-gradient(circle at top, rgba(45,45,45,0.98), rgba(0,0,0,0.98));
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             padding: 1rem;
+            margin: 0;
+            border: 0;
+            box-sizing: border-box;
+            overflow: auto;
+            -webkit-appearance: none;
+            appearance: none;
+            color-scheme: dark;
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
         }
 
-        .modal-content {
-            background: #fff;
-            border: 4px solid #000;
+        .intro-card {
+            background: rgba(0, 0, 0, 0.92);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
             max-width: 450px;
             width: 100%;
-            padding: 2rem;
+            padding: 1.25rem 1.15rem 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            color: #fff;
         }
 
-        .modal-title {
-            font-size: 1.25rem;
+        .intro-continue-btn {
+            position: relative;
+            z-index: 1002;
+            width: 100%;
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.28);
+            color: #fff;
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            font-size: 0.98rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #000;
-            padding-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            display: block;
+            text-align: center;
         }
 
-        .modal-text {
-            font-size: 0.875rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+        .intro-continue-btn:hover {
+            background: rgba(255,255,255,0.16);
         }
 
-        .modal-text b {
-            font-size: 0.75rem;
+        .intro-continue-btn:active {
+            transform: translateY(1px);
         }
 
-        .modal-text p {
-            margin: 0 0 0.75rem 0;
+        .intro-title {
+            font-size: 1.08rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(255,255,255,0.32);
+            padding-bottom: 0.45rem;
         }
 
-        .modal-text p:last-child {
+        .intro-text {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin-bottom: 0.9rem;
+            color: rgba(255,255,255,0.92);
+        }
+
+        .intro-text b {
+            font-size: 0.72rem;
+            color: #fff;
+        }
+
+        .intro-text p {
+            margin: 0 0 0.6rem 0;
+        }
+
+        .intro-text p:last-child {
             margin-bottom: 0;
         }
 
+        .intro-screen {
+            display: grid;
+            gap: 1rem;
+            width: 100%;
+            align-content: flex-start;
+            justify-items: center;
+            min-height: 100vh;
+            padding: 1rem 1rem 8rem;
+            box-sizing: border-box;
+            isolation: isolate;
+            touch-action: manipulation;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            text-decoration: none;
+        }
+
+        .intro-screen::before {
+            content: "";
+            position: absolute;
+            inset: 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .intro-screen {
+                padding: 0.5rem;
+                gap: 0.4rem;
+                justify-content: flex-start;
+                padding-top: max(0.45rem, env(safe-area-inset-top));
+                padding-bottom: max(8rem, env(safe-area-inset-bottom));
+            }
+
+            .intro-card {
+                max-width: 100%;
+                width: calc(100% - 0.5rem);
+                padding: 0.95rem 0.85rem 0.8rem;
+                border: 0;
+                border-radius: 18px;
+                box-shadow: 0 16px 48px rgba(0,0,0,0.32);
+                background: rgba(10, 10, 12, 0.84);
+                -webkit-backdrop-filter: blur(18px);
+                backdrop-filter: blur(18px);
+            }
+
+            .intro-title {
+                font-size: 0.98rem;
+                margin-bottom: 0.65rem;
+                padding-bottom: 0.35rem;
+            }
+
+            .intro-text {
+                font-size: 0.76rem;
+                line-height: 1.42;
+                margin-bottom: 0.7rem;
+            }
+
+            .intro-hit-area {
+                width: 100%;
+                padding: 0;
+            }
+
+        }
+
+        .intro-hint {
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.9;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .intro-card button,
+        .toggle-label {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .intro-hit-area {
+            width: min(100%, 520px);
+            padding: 0 0.5rem;
+        }
+
+        .intro-text {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
         .hidden { display: none; }
+
+        .app-content {
+            display: block;
+            width: 100%;
+        }
+
+        .gate-toggle {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gate-toggle:not(:checked) ~ .intro-screen {
+            display: flex;
+        }
+
+        .gate-toggle:checked ~ .intro-screen {
+            display: none;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -346,13 +504,13 @@
             background: var(--bg);
             color: var(--text);
         }
-        body.dark-theme h1, body.dark-theme label, body.dark-theme .modal-title, body.dark-theme .driver-name, body.dark-theme .probability-label, body.dark-theme a, body.dark-theme .footer {
+        body.dark-theme h1, body.dark-theme label, body.dark-theme .intro-title, body.dark-theme .driver-name, body.dark-theme .probability-label, body.dark-theme a, body.dark-theme .footer {
             color: var(--text) !important;
         }
-        body.dark-theme header, body.dark-theme .footer, body.dark-theme .modal-title {
+        body.dark-theme header, body.dark-theme .footer, body.dark-theme .intro-title {
             border-color: var(--border) !important;
         }
-        body.dark-theme .card, body.dark-theme input[type="number"], body.dark-theme select, body.dark-theme .toggle-label, body.dark-theme .triage-message, body.dark-theme .progress-bar, body.dark-theme .driver-bar-bg, body.dark-theme .modal-content {
+        body.dark-theme .card, body.dark-theme input[type="number"], body.dark-theme select, body.dark-theme .toggle-label, body.dark-theme .triage-message, body.dark-theme .progress-bar, body.dark-theme .driver-bar-bg {
             border-color: var(--border) !important;
             background: var(--card-bg) !important;
             color: var(--text) !important;
@@ -371,21 +529,23 @@
     </style>
 </head>
 <body>
-    <!-- Clinical Research Disclaimer Modal -->
-    <div id="disclaimer-modal" class="modal-overlay">
-        <div class="modal-content animate-fade-in">
-            <div class="modal-title">Clinical Research Disclosure</div>
-            <div class="modal-text">
-                <p>This predictive tool is a <b>Machine Learning (ML) research implementation</b> developed as part of a provincial study on Necrotizing Fasciitis mortality outcomes.</p>
-                <p><b>Investigational Status:</b> This application and the underlying XGBoost model are intended for <b>research and educational purposes only.</b> It has not been approved by Health Canada or the FDA for diagnostic or treatment use.</p>
-                <p><b>Clinical Judgment:</b> Predictions should NOT be used to direct individual patient care, surgical timing, or resource prioritization. Outcomes are based on provincial registry retrospective data and represent statistical probabilities for a specific cohort.</p>
-                <p><b>Data Privacy:</b> No patient-identifiable data is transmitted. All calculations occur locally on this device.</p>
+    <input type="checkbox" id="gate-toggle" class="gate-toggle" aria-hidden="true">
+    <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+        <div class="intro-hit-area">
+            <div class="intro-card animate-fade-in" id="intro-card">
+                <div class="intro-title" id="intro-title">Clinical Research Disclosure</div>
+                <div class="intro-text">
+                    <p>This predictive tool is a <b>Machine Learning (ML) research implementation</b> developed as part of a Canadian provincial study on Necrotizing Fasciitis mortality outcomes.</p>
+                    <p><b>Investigational Status:</b> This application and the underlying XGBoost model are intended for <b>research and educational purposes only.</b> It has not been approved by Health Canada or the FDA for diagnostic or treatment use.</p>
+                    <p><b>Clinical Judgment:</b> Predictions should NOT be used to direct individual patient care, surgical timing, or resource prioritization. Outcomes are based on provincial registry retrospective data and represent statistical probabilities for a specific cohort.</p>
+                    <p><b>Data Privacy:</b> No patient-identifiable data is transmitted. All calculations occur locally on this device.</p>
+                </div>
             </div>
-            <button onclick="acceptDisclaimer()" class="submit-btn" style="border-radius: 4px;">I Understand & Accept</button>
         </div>
+        <label for="gate-toggle" class="intro-continue-btn" style="position: fixed; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: 520px; z-index: 1002; pointer-events: auto;">Continue</label>
     </div>
 
-    <div class="container" id="main-content">
+    <div class="container app-content" id="main-content">
         <header style="position: relative;">
             <h1 style="text-align: left; line-height: 1.2; letter-spacing: -0.01em;">
                 NFMAP<br>
@@ -548,14 +708,15 @@
             </div>
 
             <div class="grid-2">
-                <button onclick="shareResults()" class="submit-btn" style="background: #333; margin-top: 2rem; border-color: #333;">Share Results</button>
-                <button onclick="shareApp()" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Share App</button>
+                <button id="share-results-btn" type="button" class="submit-btn" style="background: #333; margin-top: 2rem; border-color: #333;">Share Results</button>
+                <button id="share-app-btn" type="button" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Share Local App</button>
             </div>
         </div>
 
         <div class="footer">
-            <a href="mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20calculator" style="color: #000; text-decoration: underline; font-weight: 700;">Support / Feedback</a> | 
-            <a href="https://github.com/jpg123/NF-mortality-calculator" style="color: #000; text-decoration: underline; font-weight: 700;">Methods & Validation</a><br><br>
+            Standalone local file. Research and educational use only.<br><br>
+            <a href="mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20calculator" data-local-safe="true" style="color: #000; text-decoration: underline; font-weight: 700;">Support / Feedback</a> | 
+            <a href="https://github.com/jpg123/NF-mortality-calculator" data-local-safe="true" style="color: #000; text-decoration: underline; font-weight: 700;">Methods & Validation</a><br><br>
             Reference: Gawaziuk et al. (2026). J Trauma Acute Care Surg.<br>
             <i>Version 2026-04-20 | Licensed under Apache 2.0</i>
         </div>
@@ -587,12 +748,11 @@
           ]
         };
 
-        function acceptDisclaimer() {
-            document.getElementById('disclaimer-modal').classList.add('hidden');
-        }
-
         // Theme Toggle Logic
         const themeToggle = document.getElementById('theme-toggle');
+        const gateToggle = document.getElementById('gate-toggle');
+        const mainContent = document.getElementById('main-content');
+
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
             if (document.body.classList.contains('dark-theme')) {
@@ -605,6 +765,8 @@
         // Initialize App
         function init() {
             // Study Data is hardcoded above for consistency with the manuscript
+            mainContent.style.display = 'block';
+            gateToggle.checked = false;
         }
 
         function goBack() {
@@ -818,39 +980,41 @@
 
         function shareResults() {
             const prob = document.getElementById('prob-val').innerText;
-            const text = `NF Mortality Predictor Results:\nPredicted Risk: ${prob}\n\nDisclaimer: Research use only. Not a medical device.`;
+            const text = [
+                'NF Mortality Predictor Results',
+                `Predicted Risk: ${prob}`,
+                'Use status: Research only',
+                'Source: Standalone local file'
+            ].join('\n');
             
             if (navigator.share) {
                 navigator.share({
-                    title: 'NF Mortality Prediction',
-                    text: text,
-                    url: window.location.href
+                    title: 'NF Mortality Predictor Results',
+                    text: text
                 }).catch(console.error);
             } else {
                 // Fallback: Copy to clipboard
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('Results copied to clipboard.');
+                    alert('Results summary copied to clipboard.');
                 });
             }
         }
 
         function shareApp() {
-            const appUrl = 'https://jpg123.github.io/NF-mortality-calculator/NF-mortality-calculator.html';
             const message = [
-                'NF Mortality Predictor file.',
-                'Open this link to use the app:',
-                appUrl
+                'NF Mortality Predictor',
+                'Standalone local file',
+                'Open NF-mortality-calculator.html on this device to run the calculator.'
             ].join('\n');
 
             if (navigator.share) {
                 navigator.share({
                     title: 'NF Mortality Predictor',
-                    text: message,
-                    url: appUrl
+                    text: message
                 }).catch(console.error);
             } else {
                 navigator.clipboard.writeText(message).then(() => {
-                    alert('App link copied to clipboard.');
+                    alert('App reference copied to clipboard.');
                 });
             }
         }
@@ -861,14 +1025,6 @@
             form.reset();
         }
 
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW Registered', reg))
-                    .catch(err => console.error('SW Failed', err));
-            });
-        }
     </script>
 </body>
 </html>
