@@ -38,9 +38,9 @@ This tool is built using a mobile-first HTML5/JavaScript architecture, requiring
 ### 1. Local Deployment
 To run the predictive dashboard locally:
 1. Clone this repository.
-2. Open `index.html` in any modern web browser.
+2. Open `NF-mortality-calculator.html` in any modern web browser.
 3. No dependencies or `pip install` required for the dashboard itself.
-4. Use `NF-mortality-calculator.html` as the app file when sharing the tool.
+4. `index.html` is present as a convenience entry point, but `NF-mortality-calculator.html` is the canonical app file.
 
 ### 2. PWA Installation (Mobile Device)
 The application is a Progressive Web App (PWA):
