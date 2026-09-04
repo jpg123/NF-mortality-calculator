@@ -20,13 +20,13 @@ The estimate is produced by the fitted logistic model:
 
 `risk = 1 / (1 + exp(-linear predictor))`
 
-The linear predictor is the intercept plus the contribution of every entered covariate. Continuous variables and threshold indicators use the model-defined transformations. Component contributions describe the implemented coefficient calculation; they are not SHAP or LIME explanations and should not be interpreted as causal effects.
+The linear predictor is the intercept plus the contribution of every entered covariate. Continuous variables and threshold indicators use the model-defined transformations. Component contributions describe the implemented coefficient calculation and should not be interpreted as causal effects.
 
 The model is intended for the study population and internal-validation context described in the accompanying manuscript. External validation and prospective clinical evaluation remain separate requirements.
 
 ## Relationship to the burn-ml study
 
-The NF study follows the burn-ml package structure where appropriate. This includes comparison of 6 machine-learning models—logistic regression, random forest, support vector machine, XGBoost, LightGBM and multilayer perceptron—along with comparable performance reporting, validation figures, model tables and supplemental derivation material. NF-specific cohort definitions, covariates, transformations, fitted coefficients and thresholds remain the source of truth. The NF project does not use SHAP wording or SHAP analysis.
+The NF study follows the burn-ml package structure where appropriate. This includes comparison of 6 machine-learning models—logistic regression, random forest, support vector machine, XGBoost, LightGBM and multilayer perceptron—along with comparable performance reporting, validation figures, model tables and supplemental derivation material. NF-specific cohort definitions, covariates, transformations, fitted coefficients and thresholds remain the source of truth.
 
 ## Shared analysis pathway
 
