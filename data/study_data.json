@@ -1,0 +1,184 @@
+{
+  "model_metadata": {
+    "version": "",
+    "last_updated": "2026-09-04",
+    "calibration_intercept": -4.283896,
+    "description": "Logit-based mortality prediction research calculator for adults with surgically confirmed necrotizing fasciitis."
+  },
+  "coefficients": [
+    {
+      "id": "multifocal",
+      "label": "Multifocal Involvement",
+      "weight": 2.128710,
+      "or": 8.40,
+      "category": "Primary Drivers"
+    },
+    {
+      "id": "icu",
+      "label": "ICU Admission",
+      "weight": 1.759012,
+      "or": 5.81,
+      "category": "Acuity Markers"
+    },
+    {
+      "id": "renal",
+      "label": "Renal Disease",
+      "weight": 0.965621,
+      "or": 2.63,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "age",
+      "label": "Age",
+      "weight": 0.011026,
+      "or": 1.01,
+      "category": "Demographics"
+    },
+    {
+      "id": "sex",
+      "label": "Sex (Male)",
+      "weight": 0.084384,
+      "or": 1.09,
+      "category": "Demographics"
+    },
+    {
+      "id": "rural",
+      "label": "Rural Residence",
+      "weight": 0.082569,
+      "or": 1.09,
+      "category": "Demographics"
+    },
+    {
+      "id": "urea",
+      "label": "Urea > 15 mmol/L",
+      "weight": 0.220904,
+      "or": 1.25,
+      "category": "Laboratory"
+    },
+    {
+      "id": "wbc_extreme",
+      "label": "WBC < 4 or > 25",
+      "weight": -0.631468,
+      "or": 0.53,
+      "category": "Laboratory"
+    },
+    {
+      "id": "albumin_low",
+      "label": "Albumin < 25 g/L",
+      "weight": -0.283036,
+      "or": 0.75,
+      "category": "Laboratory"
+    },
+    {
+      "id": "hb_low",
+      "label": "Hemoglobin < 100 g/L",
+      "weight": -0.818376,
+      "or": 0.44,
+      "category": "Laboratory"
+    },
+    {
+      "id": "diabetes",
+      "label": "Diabetes Mellitus",
+      "weight": 0.007482,
+      "or": 1.01,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "cvd",
+      "label": "Cardiovascular Disease",
+      "weight": 0.796317,
+      "or": 2.22,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "obesity",
+      "label": "Obesity",
+      "weight": 0.668671,
+      "or": 1.95,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "liver",
+      "label": "Liver Disease",
+      "weight": 0.557033,
+      "or": 1.75,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "allergies",
+      "label": "Allergies",
+      "weight": 0.277357,
+      "or": 1.32,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "transfusion",
+      "label": "Transfusion Requirement",
+      "weight": -0.168593,
+      "or": 0.81,
+      "category": "Acuity Markers"
+    },
+    {
+      "id": "smoking",
+      "label": "Smoking History",
+      "weight": -0.517221,
+      "or": 0.60,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "substance",
+      "label": "Substance Misuse",
+      "weight": -0.71061,
+      "or": 0.49,
+      "category": "Comorbidities"
+    },
+    {
+      "id": "hb_normal",
+      "label": "Normal Hemoglobin",
+      "weight": 0,
+      "or": 1.00,
+      "category": "Laboratory"
+    },
+    {
+      "id": "alb_normal",
+      "label": "Normal Albumin",
+      "weight": 0,
+      "or": 1.00,
+      "category": "Laboratory"
+    },
+    {
+      "id": "glucose_high",
+      "label": "Glucose > 10.0 mmol/L",
+      "weight": 0.232867,
+      "or": 1.26,
+      "category": "Laboratory"
+    },
+    {
+      "id": "platelets_low",
+      "label": "Platelets < 150",
+      "weight": -0.422932,
+      "or": 0.66,
+      "category": "Laboratory"
+    }
+  ],
+  "triage_thresholds": [
+    {
+      "level": "High Risk",
+      "min": 0.50,
+      "color": "#d32f2f",
+      "message": "CRITICAL RISK. High probability of mortality. Immediate surgical debridement and ICU escalation indicated."
+    },
+    {
+      "level": "Moderate Risk",
+      "min": 0.15,
+      "color": "#fbc02d",
+      "message": "ELEVATED RISK. Patient requires close surgical monitoring and aggressive therapy. High disease burden suspected."
+    },
+    {
+      "level": "Low Risk",
+      "min": 0.00,
+      "color": "#388e3c",
+      "message": "BASELINE RISK. Standard clinical care pathway recommended. Monitor for changes in acuity markers."
+    }
+  ]
+}
