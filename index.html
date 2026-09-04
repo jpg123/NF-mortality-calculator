@@ -856,6 +856,12 @@
             </h1>
             <button id="theme-toggle" type="button">Dark Mode</button>
             <button id="glass-toggle" type="button">Glass Mode</button>
+            <label for="language-select" class="sr-only">Language</label>
+            <select id="language-select" aria-label="Language" style="margin-top: .5rem; padding: .45rem;">
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+            </select>
         </header>
 
         <form id="input-form" class="card">
@@ -1047,6 +1053,22 @@
         const glassToggle = document.getElementById('glass-toggle');
         const gateToggle = document.getElementById('gate-toggle');
         const mainContent = document.getElementById('main-content');
+        const languageSelect = document.getElementById('language-select');
+        const translations = {
+            fr: {'Age (Years)':'Âge (années)','Dark Mode':'Mode sombre','Light Mode':'Mode clair','Glass Mode':'Mode verre','Calculate Risk':'Calculer le risque','Reset':'Réinitialiser','Share Results':'Partager les résultats','Share Local App':'Partager l’application','High Risk':'Risque élevé','Moderate Risk':'Risque modéré','Low Risk':'Faible risque'},
+            es: {'Age (Years)':'Edad (años)','Dark Mode':'Modo oscuro','Light Mode':'Modo claro','Glass Mode':'Modo cristal','Calculate Risk':'Calcular riesgo','Reset':'Restablecer','Share Results':'Compartir resultados','Share Local App':'Compartir aplicación','High Risk':'Riesgo alto','Moderate Risk':'Riesgo moderado','Low Risk':'Riesgo bajo'}
+        };
+        const originalText = new WeakMap();
+        function applyLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('body *').forEach((el) => {
+                if (el.children.length === 0 && el.textContent.trim()) {
+                    if (!originalText.has(el)) originalText.set(el, el.textContent);
+                    el.textContent = lang === 'en' ? originalText.get(el) : (translations[lang][originalText.get(el)] || originalText.get(el));
+                }
+            });
+        }
+        languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
 
         function updateThemeButtons() {
             const dark = document.body.classList.contains('dark-theme');
