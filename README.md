@@ -24,6 +24,10 @@ The linear predictor is the intercept plus the contribution of every entered cov
 
 The model is intended for the study population and internal-validation context described in the accompanying manuscript. External validation and prospective clinical evaluation remain separate requirements.
 
+## Relationship to the burn-ml study
+
+The NF study follows the burn-ml package structure where appropriate. This includes comparison of 6 machine-learning models—logistic regression, random forest, support vector machine, XGBoost, LightGBM and multilayer perceptron—along with comparable performance reporting, validation figures, model tables and supplemental derivation material. NF-specific cohort definitions, covariates, transformations, fitted coefficients and thresholds remain the source of truth. The NF project does not use SHAP wording or SHAP analysis.
+
 ## Shared analysis pathway
 
 The NF and burn mortality papers should use a similar analysis pathway where appropriate: prespecified covariates; explicit coding and clinically justified binning; leakage-resistant fold-local preprocessing; stratified internal validation; comparison with a simple logistic baseline and other candidate models; L2-penalized multivariable logistic regression when supported by the finalized analysis; calibration and discrimination reporting; and transparent documentation of the model used by the app. The covariates, coefficients, cohort definitions and clinical interpretations remain study-specific and must not be copied between studies.
