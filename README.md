@@ -24,4 +24,4 @@ This research and education app is intended for the study population described i
 
 ## License
 
-No reuse license is included. Contact the study team before adapting or redistributing this code.
+This app is licensed under the Apache License, Version 2.0. See [`LICENSE`](LICENSE) for the terms.
