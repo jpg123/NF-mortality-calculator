@@ -20,3 +20,8 @@ The calculator displays the estimated in-hospital mortality probability from its
 The linear predictor combines the fitted intercept and transformed input contributions. Blank laboratory values are omitted from the app calculation. Component contributions are descriptive parts of the implemented calculation, not causal effects.
 
 This research and education app is intended for the study population described in the companion manuscript. It is not a substitute for clinical assessment or local protocols. The model has not undergone external validation or prospective clinical evaluation.
+
+
+## License
+
+No reuse license is included. Contact the study team before adapting or redistributing this code.
