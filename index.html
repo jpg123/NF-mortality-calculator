@@ -45,7 +45,7 @@
         }
 
         body {
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: "Times New Roman", Times, serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
@@ -836,8 +836,6 @@
                 <span class="title-main">NFMAP</span>
                 <span class="title-sub">NF Mortality Assessment Platform</span>
             </h1>
-            <button id="theme-toggle" type="button">Dark Mode</button>
-            <button id="glass-toggle" type="button">Glass Mode</button>
             <label for="language-select" class="sr-only">Language</label>
             <select id="language-select" aria-label="Language" style="margin-top: .5rem; padding: .45rem;">
                 <option value="en">English</option>
@@ -990,6 +988,13 @@
             </div>
         </div>
 
+        <div class="card model-explanation" id="model-explanation">
+            <div class="intro-title">How the risk is calculated</div>
+            <p>This app uses the exported coefficient-based multivariable logistic-regression model selected for the NF mortality calculator—not a neural network or a tree-based model. Each entered characteristic contributes a model coefficient to a linear predictor. The app then converts that predictor to an estimated in-hospital mortality probability using the logistic function:</p>
+            <p><code>risk = 1 / (1 + exp(-linear predictor))</code></p>
+            <p>The displayed risk category is based on the prespecified probability thresholds: low risk below 15%, moderate risk from 15% to less than 50%, and high risk at 50% or above. The component display shows the implemented model contributions; these are not causal effects. Model-development imputation is not run in the browser. If a laboratory field is blank, that laboratory contribution is omitted from the calculation.</p>
+        </div>
+
         <div class="footer">
             Standalone local file. Research and educational use only.<br><br>
             <a href="mailto:logsetty@umanitoba.ca?subject=NF%20mortality%20calculator" data-local-safe="true" style="color: #000; text-decoration: underline; font-weight: 700;">Support / Feedback</a> | 
@@ -1031,8 +1036,6 @@
         };
 
         // Theme Toggle Logic
-        const themeToggle = document.getElementById('theme-toggle');
-        const glassToggle = document.getElementById('glass-toggle');
         const gateToggle = document.getElementById('gate-toggle');
         const mainContent = document.getElementById('main-content');
         const languageSelect = document.getElementById('language-select');
@@ -1051,48 +1054,6 @@
             });
         }
         languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
-
-        function updateThemeButtons() {
-            const dark = document.body.classList.contains('dark-theme');
-            const glass = document.body.classList.contains('glass-theme');
-            if (!glass && !dark) {
-                themeToggle.innerText = 'Dark Mode';
-                glassToggle.innerText = 'Glass Mode';
-            } else if (!glass && dark) {
-                themeToggle.innerText = 'Light Mode';
-                glassToggle.innerText = 'Glass Mode';
-            } else if (glass && !dark) {
-                themeToggle.innerText = 'Dark Mode';
-                glassToggle.innerText = 'Glass Light';
-            } else {
-                themeToggle.innerText = 'Light Mode';
-                glassToggle.innerText = 'Glass Dark';
-            }
-        }
-
-        themeToggle.addEventListener('click', () => {
-            const glass = document.body.classList.contains('glass-theme');
-            const dark = document.body.classList.contains('dark-theme');
-            if (glass) {
-                if (dark) {
-                    document.body.classList.remove('dark-theme');
-                } else {
-                    document.body.classList.add('dark-theme');
-                }
-            } else {
-                document.body.classList.toggle('dark-theme');
-            }
-            updateThemeButtons();
-        });
-
-        glassToggle.addEventListener('click', () => {
-            if (document.body.classList.contains('glass-theme')) {
-                document.body.classList.remove('glass-theme', 'dark-theme');
-            } else {
-                document.body.classList.add('glass-theme');
-            }
-            updateThemeButtons();
-        });
 
         document.getElementById('share-results-btn').addEventListener('click', shareResults);
         document.getElementById('share-app-btn').addEventListener('click', shareApp);
@@ -1119,26 +1080,26 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Check for missing lab values to prompt user
+            // Missing laboratory values are omitted from the app linear predictor.
             const labs = ['wbc', 'urea', 'platelets', 'albumin', 'glucose', 'hemoglobin'];
             const missing = labs.filter(id => !document.getElementById(id).value);
             
             if (missing.length > 0) {
-                const proceed = confirm(`Clinical Alert: ${missing.length} laboratory values are missing. The model will treat these as baseline (normal) values. Would you like to proceed with the calculation?`);
+                const proceed = confirm(`Clinical Alert: ${missing.length} laboratory values are missing. Those laboratory contributions will be omitted from the risk calculation. Would you like to proceed?`);
                 if (!proceed) return;
             }
 
             const sexInput = document.querySelector('input[name="sex"]:checked');
             const inputs = {
-                age: parseFloat(document.getElementById('age').value) || 0,
+                age: parseFloat(document.getElementById('age').value),
                 sex: sexInput ? sexInput.value : 'unknown',
                 res_type: document.getElementById('res_type').value,
-                wbc: parseFloat(document.getElementById('wbc').value) || 15, // Default to normal-range if missing
-                urea: parseFloat(document.getElementById('urea').value) || 5,
-                hb: parseFloat(document.getElementById('hemoglobin').value) || 130,
-                alb: parseFloat(document.getElementById('albumin').value) || 35,
-                glucose: parseFloat(document.getElementById('glucose').value) || 5.5,
-                platelets: parseFloat(document.getElementById('platelets').value) || 250,
+                wbc: parseFloat(document.getElementById('wbc').value),
+                urea: parseFloat(document.getElementById('urea').value),
+                hb: parseFloat(document.getElementById('hemoglobin').value),
+                alb: parseFloat(document.getElementById('albumin').value),
+                glucose: parseFloat(document.getElementById('glucose').value),
+                platelets: parseFloat(document.getElementById('platelets').value),
                 multifocal: document.getElementById('multifocal').checked,
                 icu: document.getElementById('icu').checked,
                 renal: document.getElementById('renal').checked,
@@ -1175,8 +1136,10 @@
             
             // Per-year age impact
             const ageCoeff = 0.011026;
-            logit += data.age * ageCoeff;
-            impacts.push({ label: 'Age', val: data.age * ageCoeff });
+            if (Number.isFinite(data.age)) {
+                logit += data.age * ageCoeff;
+                impacts.push({ label: 'Age', val: data.age * ageCoeff });
+            }
 
             if (data.sex === 'male') {
                 logit += 0.084384;
@@ -1271,7 +1234,21 @@
             // Find matching triage metadata
             const triage = studyData.triage_thresholds.find(t => prob >= t.min);
             if (triage) {
-                triageMsg.innerHTML = `<strong>${triage.level}:</strong> ${triage.message}`;
+                const localizedTriage = {
+                    fr: {
+                        'High Risk': ['Risque élevé', 'Forte probabilité de mortalité. Débridement chirurgical immédiat et escalade aux soins intensifs indiqués.'],
+                        'Moderate Risk': ['Risque modéré', 'Évaluation clinique rapprochée et surveillance de l’évolution recommandées.'],
+                        'Low Risk': ['Faible risque', 'Parcours de soins clinique standard recommandé. Surveiller toute modification des marqueurs de gravité.']
+                    },
+                    es: {
+                        'High Risk': ['Riesgo alto', 'Alta probabilidad de mortalidad. Desbridamiento quirúrgico inmediato y escalamiento a cuidados intensivos indicados.'],
+                        'Moderate Risk': ['Riesgo moderado', 'Se recomienda evaluación clínica estrecha y vigilancia de la evolución.'],
+                        'Low Risk': ['Riesgo bajo', 'Se recomienda el circuito de atención clínica estándar. Vigilar cambios en los marcadores de gravedad.']
+                    }
+                }[languageSelect.value]?.[triage.level];
+                const level = localizedTriage ? localizedTriage[0] : triage.level;
+                const message = localizedTriage ? localizedTriage[1] : triage.message;
+                triageMsg.innerHTML = `<strong>${level}:</strong> ${message}`;
             }
 
             // Render component contributions from the implemented coefficient model

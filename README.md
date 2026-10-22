@@ -1,33 +1,22 @@
 # NF Mortality Calculator
 
-## How to use the app
+This repository contains the standalone NF mortality calculator app. Open `index.html` in a browser. The app runs locally; its calculations do not send entered values to a server. Do not enter identifiable patient information into shared messages or screenshots.
 
-1. Open the deployed calculator in a mobile or desktop browser.
-2. Review the research-use disclaimer.
-3. Select the available patient characteristics, clinical findings and laboratory values.
-4. Select **Calculate risk**.
-5. Review the estimated in-hospital mortality percentage, risk category and model-component contributions.
-6. Use **Reset** to enter another patient.
-7. Use **Share App** to send the public calculator link through Messages, iMessage or another sharing service. The link does not include patient information.
+## Included
 
-The calculator is intended for research, education and discussion. It does not replace surgical assessment, consultation with an appropriate clinical team or local protocols. Do not enter identifiable patient information into a shared link or message.
+- `index.html`: canonical app and embedded coefficient implementation
+- `data/study_data.json`: app model metadata and explanatory values
+- `App_Explainer.html`: user-facing explanation of the app outputs
+- `manifest.json`, `icon.svg` and `sw.js`: installable-app metadata and offline support
 
-## Technical information
+This is the app code only. It does not include patient-level records, analysis datasets or the model-development pipeline.
 
-The app is a standalone static calculator. The validated NF model intercept, weights, preprocessing rules and thresholds are embedded in `index.html` so the deployed URL can be opened and shared without a separate model download. `data/study_data.json` is retained as the source/audit representation of the model artifact.
+## Calculation and intended use
 
-The estimate is produced by the fitted logistic model:
+The calculator displays the estimated in-hospital mortality probability from its coefficient-based logistic-regression implementation:
 
 `risk = 1 / (1 + exp(-linear predictor))`
 
-The linear predictor is the intercept plus the contribution of every entered covariate. Continuous variables and threshold indicators use the model-defined transformations. Component contributions describe the implemented coefficient calculation and should not be interpreted as causal effects.
+The linear predictor combines the fitted intercept and transformed input contributions. Blank laboratory values are omitted from the app calculation. Component contributions are descriptive parts of the implemented calculation, not causal effects.
 
-The model is intended for the study population and internal-validation context described in the accompanying manuscript. External validation and prospective clinical evaluation remain separate requirements.
-
-## Relationship to the burn-ml study
-
-The NF study follows the burn-ml package structure where appropriate. This includes comparison of 6 machine-learning models—logistic regression, random forest, support vector machine, XGBoost, LightGBM and multilayer perceptron—along with comparable performance reporting, validation figures, model tables and supplemental derivation material. NF-specific cohort definitions, covariates, transformations, fitted coefficients and thresholds remain the source of truth.
-
-## Shared analysis pathway
-
-The NF and burn mortality papers should use a similar analysis pathway where appropriate: prespecified covariates; explicit coding and clinically justified binning; leakage-resistant fold-local preprocessing; stratified internal validation; comparison with a simple logistic baseline and other candidate models; L2-penalized multivariable logistic regression when supported by the finalized analysis; calibration and discrimination reporting; and transparent documentation of the model used by the app. The covariates, coefficients, cohort definitions and clinical interpretations remain study-specific and must not be copied between studies.
+This research and education app is intended for the study population described in the companion manuscript. It is not a substitute for clinical assessment or local protocols. The model has not undergone external validation or prospective clinical evaluation.
