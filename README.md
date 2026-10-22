@@ -1,6 +1,6 @@
 # NF Mortality Calculator
 
-This repository contains the standalone NF mortality calculator app. Open `index.html` in a browser. The app runs locally; its calculations do not send entered values to a server. Do not enter identifiable patient information into shared messages or screenshots.
+This public repository contains the standalone NF mortality calculator app. Open the [hosted calculator](https://jpg123.github.io/NF-mortality-calculator/) or open `index.html` locally. Calculations run in the browser; entered values are not sent to a server. Do not enter identifiable patient information into shared messages or screenshots.
 
 ## Included
 
