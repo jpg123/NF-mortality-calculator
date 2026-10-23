@@ -4,7 +4,7 @@
   "description": "Research calculator for mortality prediction in adults with surgically confirmed necrotizing fasciitis.",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
+  "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
     {
