@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nf-care-20261023-v2';
+const CACHE_NAME = 'nf-care-20261023-v3';
 const CACHE_PREFIX = 'nf-care-';
 const ASSETS = [
     'index.html',
