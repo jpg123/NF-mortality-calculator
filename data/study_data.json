@@ -1,7 +1,7 @@
 {
   "model_metadata": {
     "version": "",
-    "last_updated": "2026-09-04",
+    "last_updated": "2026-10-23",
     "calibration_intercept": -4.283896,
     "description": "Logit-based mortality prediction research calculator for adults with surgically confirmed necrotizing fasciitis."
   },
@@ -9,8 +9,8 @@
     {
       "id": "multifocal",
       "label": "Multifocal Involvement",
-      "weight": 2.128710,
-      "or": 8.40,
+      "weight": 2.12871,
+      "or": 8.4,
       "category": "Primary Drivers"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "id": "transfusion",
-      "label": "Transfusion Requirement",
+      "label": "Blood product receipt",
       "weight": -0.168593,
       "or": 0.81,
       "category": "Acuity Markers"
@@ -122,7 +122,7 @@
       "id": "smoking",
       "label": "Smoking History",
       "weight": -0.517221,
-      "or": 0.60,
+      "or": 0.6,
       "category": "Comorbidities"
     },
     {
@@ -136,14 +136,14 @@
       "id": "hb_normal",
       "label": "Normal Hemoglobin",
       "weight": 0,
-      "or": 1.00,
+      "or": 1.0,
       "category": "Laboratory"
     },
     {
       "id": "alb_normal",
       "label": "Normal Albumin",
       "weight": 0,
-      "or": 1.00,
+      "or": 1.0,
       "category": "Laboratory"
     },
     {
@@ -164,21 +164,21 @@
   "triage_thresholds": [
     {
       "level": "High Risk",
-      "min": 0.50,
+      "min": 0.5,
       "color": "#d32f2f",
-      "message": "CRITICAL RISK. High probability of mortality. Immediate surgical debridement and ICU escalation indicated."
+      "message": "Estimated mortality probability is at least 50%. Research output; interpret with clinical assessment."
     },
     {
       "level": "Moderate Risk",
       "min": 0.15,
       "color": "#fbc02d",
-      "message": "ELEVATED RISK. Patient requires close surgical monitoring and aggressive therapy. High disease burden suspected."
+      "message": "Estimated mortality probability is 15% to less than 50%. Research output; interpret with clinical assessment."
     },
     {
       "level": "Low Risk",
-      "min": 0.00,
+      "min": 0.0,
       "color": "#388e3c",
-      "message": "BASELINE RISK. Standard clinical care pathway recommended. Monitor for changes in acuity markers."
+      "message": "Estimated mortality probability is below 15%. Research output; interpret with clinical assessment."
     }
   ]
 }

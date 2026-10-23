@@ -222,6 +222,18 @@
             gap: 0.7rem;
         }
 
+        .results-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .results-actions .submit-btn {
+            min-width: 0;
+            padding: 0.75rem 0.45rem;
+            overflow-wrap: anywhere;
+        }
+
         .toggle-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -947,7 +959,7 @@
                     </div>
                     <div class="toggle-item">
                         <input type="checkbox" id="transfusion">
-                        <label for="transfusion" class="toggle-label">Transfusion</label>
+                        <label for="transfusion" class="toggle-label">Blood products received</label>
                     </div>
                 </div>
             </div>
@@ -982,9 +994,10 @@
                 <!-- Drivers injected here -->
             </div>
 
-            <div class="grid-2">
-                <button id="share-results-btn" type="button" class="submit-btn" style="background: #333; margin-top: 2rem; border-color: #333;">Share Results</button>
-                <button id="share-app-btn" type="button" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Share Local App</button>
+            <div class="results-actions">
+                <button id="calculate-another-btn" type="button" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Calculate Another Risk</button>
+                <button id="share-results-btn" type="button" class="submit-btn" style="background: #333; margin-top: 2rem; border-color: #333;">Share Data</button>
+                <button id="share-app-btn" type="button" class="submit-btn" style="background: #fff; color: #000; margin-top: 2rem; border-color: #000;">Share App</button>
             </div>
         </div>
 
@@ -1007,31 +1020,38 @@
         const studyData = {
           "model_metadata": {
             "version": "",
-            "last_updated": "2026-09-04",
+            "last_updated": "2026-10-23",
             "calibration_intercept": -4.283896,
             "description": "Logit-based mortality prediction research calculator for adults with surgically confirmed necrotizing fasciitis."
           },
           "coefficients": [
-            { "id": "multifocal", "label": "Multifocal Involvement", "weight": 2.128710 },
+            { "id": "multifocal", "label": "Multifocal Involvement", "weight": 2.12871 },
             { "id": "icu", "label": "ICU Admission", "weight": 1.759012 },
             { "id": "renal", "label": "Renal Disease", "weight": 0.965621 },
             { "id": "age", "label": "Age", "weight": 0.011026 },
             { "id": "sex", "label": "Sex (Male)", "weight": 0.084384 },
             { "id": "rural", "label": "Rural Residence", "weight": 0.082569 },
-            { "id": "cvd", "label": "Cardiovascular Disease", "weight": 0.796317 },
-            { "id": "glucose", "label": "Glucose > 10.0 mmol/L", "weight": 0.232867 },
             { "id": "urea", "label": "Urea > 15 mmol/L", "weight": 0.220904 },
             { "id": "wbc_extreme", "label": "WBC < 4 or > 25", "weight": -0.631468 },
-            { "id": "hb_low", "label": "Hemoglobin < 100 g/L", "weight": -0.818376 },
             { "id": "albumin_low", "label": "Albumin < 25 g/L", "weight": -0.283036 },
-            { "id": "platelets_low", "label": "Platelets < 150", "weight": -0.422932 },
+            { "id": "hb_low", "label": "Hemoglobin < 100 g/L", "weight": -0.818376 },
             { "id": "diabetes", "label": "Diabetes Mellitus", "weight": 0.007482 },
-            { "id": "transfusion", "label": "Transfusion Requirement", "weight": -0.168593 },
+            { "id": "cvd", "label": "Cardiovascular Disease", "weight": 0.796317 },
+            { "id": "obesity", "label": "Obesity", "weight": 0.668671 },
+            { "id": "liver", "label": "Liver Disease", "weight": 0.557033 },
+            { "id": "allergies", "label": "Allergies", "weight": 0.277357 },
+            { "id": "transfusion", "label": "Blood product receipt", "weight": -0.168593 },
+            { "id": "smoking", "label": "Smoking History", "weight": -0.517221 },
+            { "id": "substance", "label": "Substance Misuse", "weight": -0.71061 },
+            { "id": "hb_normal", "label": "Normal Hemoglobin", "weight": 0 },
+            { "id": "alb_normal", "label": "Normal Albumin", "weight": 0 },
+            { "id": "glucose_high", "label": "Glucose > 10.0 mmol/L", "weight": 0.232867 },
+            { "id": "platelets_low", "label": "Platelets < 150", "weight": -0.422932 }
           ],
           "triage_thresholds": [
-            { "level": "High Risk", "min": 0.50, "color": "#d32f2f", "message": "High probability of mortality. Immediate surgical debridement and ICU escalation indicated." },
-            { "level": "Moderate Risk", "min": 0.15, "color": "#fbc02d", "message": "Patient requires close surgical monitoring and aggressive therapy. High disease burden suspected." },
-            { "level": "Low Risk", "min": 0.00, "color": "#388e3c", "message": "Standard clinical care pathway recommended. Monitor for changes in acuity markers." }
+            { "level": "High Risk", "min": 0.50, "color": "#d32f2f", "message": "Estimated mortality probability is at least 50%. Research output; interpret with clinical assessment." },
+            { "level": "Moderate Risk", "min": 0.15, "color": "#fbc02d", "message": "Estimated mortality probability is 15% to less than 50%. Research output; interpret with clinical assessment." },
+            { "level": "Low Risk", "min": 0.00, "color": "#388e3c", "message": "Estimated mortality probability is below 15%. Research output; interpret with clinical assessment." }
           ]
         };
 
@@ -1040,10 +1060,37 @@
         const mainContent = document.getElementById('main-content');
         const languageSelect = document.getElementById('language-select');
         const translations = {
-            fr: {'Age (Years)':'Âge (années)','Dark Mode':'Mode sombre','Light Mode':'Mode clair','Glass Mode':'Mode verre','Calculate Risk':'Calculer le risque','Reset':'Réinitialiser','Share Results':'Partager les résultats','Share Local App':'Partager l’application','High Risk':'Risque élevé','Moderate Risk':'Risque modéré','Low Risk':'Faible risque'},
-            es: {'Age (Years)':'Edad (años)','Dark Mode':'Modo oscuro','Light Mode':'Modo claro','Glass Mode':'Modo cristal','Calculate Risk':'Calcular riesgo','Reset':'Restablecer','Share Results':'Compartir resultados','Share Local App':'Compartir aplicación','High Risk':'Riesgo alto','Moderate Risk':'Riesgo moderado','Low Risk':'Riesgo bajo'}
+            fr: {
+                'Blood products received':'Produits sanguins reçus','Blood product receipt':'Produits sanguins reçus',
+                'Age (Years)':'Âge (années)','Risk Level':'Niveau de risque','Risk Drivers (Component Impact)':'Contributions du modèle',
+                'Multifocal Involvement':'Atteinte multifocale','ICU Admission':'Admission aux soins intensifs','Renal Disease':'Maladie rénale',
+                'Age':'Âge','Sex: Male':'Sexe masculin','Rural Residence':'Résidence rurale','Urea > 15 mmol/L':'Urée > 15 mmol/L',
+                'WBC < 4 or > 25':'Leucocytes < 4 ou > 25','Hemoglobin < 100 g/L':'Hémoglobine < 100 g/L',
+                'Albumin < 25 g/L':'Albumine < 25 g/L','Glucose > 10.0 mmol/L':'Glucose > 10,0 mmol/L',
+                'Platelets < 150':'Plaquettes < 150','Diabetes Mellitus':'Diabète','Cardiovascular Disease':'Maladie cardiovasculaire',
+                'Obesity':'Obésité','Liver Disease':'Maladie hépatique','Allergies':'Allergies','Smoking History':'Antécédents de tabagisme',
+                'Substance Misuse':'Usage problématique de substances','Calculate Risk':'Calculer le risque','Reset':'Réinitialiser',
+                'Share Results':'Partager les résultats','Share Data':'Partager les données','Share App':'Partager l’application',
+                'Share Local App':'Partager l’application','Calculate Another Risk':'Calculer un autre risque',
+                'High Risk':'Risque élevé','Moderate Risk':'Risque modéré','Low Risk':'Faible risque'
+            },
+            es: {
+                'Blood products received':'Productos sanguíneos recibidos','Blood product receipt':'Productos sanguíneos recibidos',
+                'Age (Years)':'Edad (años)','Risk Level':'Nivel de riesgo','Risk Drivers (Component Impact)':'Contribuciones del modelo',
+                'Multifocal Involvement':'Afectación multifocal','ICU Admission':'Ingreso en UCI','Renal Disease':'Enfermedad renal',
+                'Age':'Edad','Sex: Male':'Sexo masculino','Rural Residence':'Residencia rural','Urea > 15 mmol/L':'Urea > 15 mmol/L',
+                'WBC < 4 or > 25':'Leucocitos < 4 o > 25','Hemoglobin < 100 g/L':'Hemoglobina < 100 g/L',
+                'Albumin < 25 g/L':'Albúmina < 25 g/L','Glucose > 10.0 mmol/L':'Glucosa > 10,0 mmol/L',
+                'Platelets < 150':'Plaquetas < 150','Diabetes Mellitus':'Diabetes','Cardiovascular Disease':'Enfermedad cardiovascular',
+                'Obesity':'Obesidad','Liver Disease':'Enfermedad hepática','Allergies':'Alergias','Smoking History':'Antecedentes de tabaquismo',
+                'Substance Misuse':'Uso problemático de sustancias','Calculate Risk':'Calcular riesgo','Reset':'Restablecer',
+                'Share Results':'Compartir resultados','Share Data':'Compartir datos','Share App':'Compartir aplicación',
+                'Share Local App':'Compartir aplicación','Calculate Another Risk':'Calcular otro riesgo',
+                'High Risk':'Riesgo alto','Moderate Risk':'Riesgo moderado','Low Risk':'Riesgo bajo'
+            }
         };
         const originalText = new WeakMap();
+        let lastCalculation = null;
         function applyLanguage(lang) {
             document.documentElement.lang = lang;
             document.querySelectorAll('body *').forEach((el) => {
@@ -1053,8 +1100,14 @@
                 }
             });
         }
-        languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
+        languageSelect.addEventListener('change', () => {
+            applyLanguage(languageSelect.value);
+            if (lastCalculation) {
+                displayResults(lastCalculation.prob, lastCalculation.perc, lastCalculation.oddsRatio, lastCalculation.impacts);
+            }
+        });
 
+        document.getElementById('calculate-another-btn').addEventListener('click', goBack);
         document.getElementById('share-results-btn').addEventListener('click', shareResults);
         document.getElementById('share-app-btn').addEventListener('click', shareApp);
 
@@ -1063,10 +1116,10 @@
             // Study Data is hardcoded above for consistency with the manuscript
             mainContent.style.display = 'block';
             gateToggle.checked = false;
-            updateThemeButtons();
         }
 
         function goBack() {
+            lastCalculation = null;
             results.style.display = 'none';
             form.classList.remove('hidden');
             window.scrollTo(0, 0);
@@ -1116,93 +1169,102 @@
             calculateRisk(inputs);
         });
 
+        function coefficientFor(id) {
+            const coefficient = studyData.coefficients.find((item) => item.id === id);
+            if (!coefficient || !Number.isFinite(coefficient.weight)) {
+                throw new Error(`Missing valid app coefficient: ${id}`);
+            }
+            return coefficient.weight;
+        }
+
         function calculateRisk(data) {
             let logit = studyData.model_metadata.calibration_intercept;
             const impacts = [];
 
             // Primary drivers
             if (data.multifocal) {
-                logit += 2.12871;
-                impacts.push({ label: 'Multifocal Involvement', val: 2.12871 });
+                logit += coefficientFor('multifocal');
+                impacts.push({ label: 'Multifocal Involvement', val: coefficientFor('multifocal') });
             }
             if (data.icu) {
-                logit += 1.759012;
-                impacts.push({ label: 'ICU Admission', val: 1.759012 });
+                logit += coefficientFor('icu');
+                impacts.push({ label: 'ICU Admission', val: coefficientFor('icu') });
             }
             if (data.renal) {
-                logit += 0.965621;
-                impacts.push({ label: 'Renal Disease', val: 0.965621 });
+                logit += coefficientFor('renal');
+                impacts.push({ label: 'Renal Disease', val: coefficientFor('renal') });
             }
             
             // Per-year age impact
-            const ageCoeff = 0.011026;
+            const ageCoeff = coefficientFor('age');
             if (Number.isFinite(data.age)) {
                 logit += data.age * ageCoeff;
                 impacts.push({ label: 'Age', val: data.age * ageCoeff });
             }
 
             if (data.sex === 'male') {
-                logit += 0.084384;
-                impacts.push({ label: 'Sex: Male', val: 0.084384 });
+                logit += coefficientFor('sex');
+                impacts.push({ label: 'Sex: Male', val: coefficientFor('sex') });
             }
 
             // Geographic drivers
             if (data.res_type === 'rural') {
-                logit += 0.082569;
-                impacts.push({ label: 'Rural Residence', val: 0.082569 });
+                logit += coefficientFor('rural');
+                impacts.push({ label: 'Rural Residence', val: coefficientFor('rural') });
             }
 
             // Secondary drivers (Lab)
             if (data.urea > 15) {
-                logit += 0.220904;
-                impacts.push({ label: 'Urea > 15 mmol/L', val: 0.220904 });
+                logit += coefficientFor('urea');
+                impacts.push({ label: 'Urea > 15 mmol/L', val: coefficientFor('urea') });
             }
             if (data.wbc > 25 || data.wbc < 4) {
-                logit -= 0.631468;
-                impacts.push({ label: 'WBC < 4 or > 25', val: -0.631468 });
+                logit += coefficientFor('wbc_extreme');
+                impacts.push({ label: 'WBC < 4 or > 25', val: coefficientFor('wbc_extreme') });
             }
             if (data.hb < 100) {
-                logit -= 0.818376;
-                impacts.push({ label: 'Hemoglobin < 100 g/L', val: -0.818376 });
+                logit += coefficientFor('hb_low');
+                impacts.push({ label: 'Hemoglobin < 100 g/L', val: coefficientFor('hb_low') });
             }
             if (data.alb < 25) {
-                logit -= 0.283036;
-                impacts.push({ label: 'Albumin < 25 g/L', val: -0.283036 });
+                logit += coefficientFor('albumin_low');
+                impacts.push({ label: 'Albumin < 25 g/L', val: coefficientFor('albumin_low') });
             }
 
             // Additional Labs
             if (data.glucose > 10.0) {
-                logit += 0.232867;
-                impacts.push({ label: 'Glucose > 10.0 mmol/L', val: 0.232867 });
+                logit += coefficientFor('glucose_high');
+                impacts.push({ label: 'Glucose > 10.0 mmol/L', val: coefficientFor('glucose_high') });
             }
             if (data.platelets < 150) {
-                logit -= 0.422932;
-                impacts.push({ label: 'Platelets < 150', val: -0.422932 });
+                logit += coefficientFor('platelets_low');
+                impacts.push({ label: 'Platelets < 150', val: coefficientFor('platelets_low') });
             }
 
             // Comorbidities
             if (data.diabetes) {
-                logit += 0.007482;
-                impacts.push({ label: 'Diabetes Mellitus', val: 0.007482 });
+                logit += coefficientFor('diabetes');
+                impacts.push({ label: 'Diabetes Mellitus', val: coefficientFor('diabetes') });
             }
             if (data.cvd) {
-                logit += 0.796317;
-                impacts.push({ label: 'Cardiovascular Disease', val: 0.796317 });
+                logit += coefficientFor('cvd');
+                impacts.push({ label: 'Cardiovascular Disease', val: coefficientFor('cvd') });
             }
-            if (data.obesity) { logit += 0.668671; impacts.push({ label: 'Obesity', val: 0.668671 }); }
-            if (data.liver) { logit += 0.557033; impacts.push({ label: 'Liver Disease', val: 0.557033 }); }
-            if (data.allergies) { logit += 0.277357; impacts.push({ label: 'Allergies', val: 0.277357 }); }
-            if (data.smoking) { logit -= 0.517221; impacts.push({ label: 'Smoking History', val: -0.517221 }); }
-            if (data.substance) { logit -= 0.710610; impacts.push({ label: 'Substance Misuse', val: -0.710610 }); }
+            if (data.obesity) { logit += coefficientFor('obesity'); impacts.push({ label: 'Obesity', val: coefficientFor('obesity') }); }
+            if (data.liver) { logit += coefficientFor('liver'); impacts.push({ label: 'Liver Disease', val: coefficientFor('liver') }); }
+            if (data.allergies) { logit += coefficientFor('allergies'); impacts.push({ label: 'Allergies', val: coefficientFor('allergies') }); }
+            if (data.smoking) { logit += coefficientFor('smoking'); impacts.push({ label: 'Smoking History', val: coefficientFor('smoking') }); }
+            if (data.substance) { logit += coefficientFor('substance'); impacts.push({ label: 'Substance Misuse', val: coefficientFor('substance') }); }
             if (data.transfusion) {
-                logit -= 0.168593;
-                impacts.push({ label: 'Transfusion Requirement', val: -0.168593 });
+                logit += coefficientFor('transfusion');
+                impacts.push({ label: 'Blood product receipt', val: coefficientFor('transfusion') });
             }
 
             const prob = 1 / (1 + Math.exp(-logit));
             const probPerc = Math.round(prob * 100);
             const oddsRatio = Math.exp(logit - studyData.model_metadata.calibration_intercept);
 
+            lastCalculation = { prob, perc: probPerc, oddsRatio, impacts };
             displayResults(prob, probPerc, oddsRatio, impacts);
         }
 
@@ -1236,14 +1298,14 @@
             if (triage) {
                 const localizedTriage = {
                     fr: {
-                        'High Risk': ['Risque élevé', 'Forte probabilité de mortalité. Débridement chirurgical immédiat et escalade aux soins intensifs indiqués.'],
-                        'Moderate Risk': ['Risque modéré', 'Évaluation clinique rapprochée et surveillance de l’évolution recommandées.'],
-                        'Low Risk': ['Faible risque', 'Parcours de soins clinique standard recommandé. Surveiller toute modification des marqueurs de gravité.']
+                        'High Risk': ['Risque élevé', 'Probabilité estimée de mortalité d’au moins 50 %. Résultat de recherche à interpréter avec l’évaluation clinique.'],
+                        'Moderate Risk': ['Risque modéré', 'Probabilité estimée de mortalité de 15 % à moins de 50 %. Résultat de recherche à interpréter avec l’évaluation clinique.'],
+                        'Low Risk': ['Faible risque', 'Probabilité estimée de mortalité inférieure à 15 %. Résultat de recherche à interpréter avec l’évaluation clinique.']
                     },
                     es: {
-                        'High Risk': ['Riesgo alto', 'Alta probabilidad de mortalidad. Desbridamiento quirúrgico inmediato y escalamiento a cuidados intensivos indicados.'],
-                        'Moderate Risk': ['Riesgo moderado', 'Se recomienda evaluación clínica estrecha y vigilancia de la evolución.'],
-                        'Low Risk': ['Riesgo bajo', 'Se recomienda el circuito de atención clínica estándar. Vigilar cambios en los marcadores de gravedad.']
+                        'High Risk': ['Riesgo alto', 'Probabilidad de mortalidad estimada de al menos 50 %. Resultado de investigación; interpretar junto con la evaluación clínica.'],
+                        'Moderate Risk': ['Riesgo moderado', 'Probabilidad de mortalidad estimada de 15 % a menos de 50 %. Resultado de investigación; interpretar junto con la evaluación clínica.'],
+                        'Low Risk': ['Riesgo bajo', 'Probabilidad de mortalidad estimada inferior al 15 %. Resultado de investigación; interpretar junto con la evaluación clínica.']
                     }
                 }[languageSelect.value]?.[triage.level];
                 const level = localizedTriage ? localizedTriage[0] : triage.level;
@@ -1253,7 +1315,8 @@
 
             // Render component contributions from the implemented coefficient model
             const driverContainer = document.getElementById('drivers-container');
-            driverContainer.innerHTML = '<label>Risk Drivers (Component Impact)</label>';
+            const driverHeading = translations[languageSelect.value]?.['Risk Drivers (Component Impact)'] || 'Risk Drivers (Component Impact)';
+            driverContainer.innerHTML = `<label>${driverHeading}</label>`;
             
             const maxImpact = Math.max(...impacts.map(i => Math.abs(i.val)));
 
@@ -1264,7 +1327,7 @@
                 const width = (Math.abs(i.val) / maxImpact) * 100;
                 
                 item.innerHTML = `
-                    <div class="driver-name">${i.label}</div>
+                    <div class="driver-name">${translations[languageSelect.value]?.[i.label] || i.label}</div>
                     <div class="driver-bar-bg">
                         <div class="driver-bar-fill" style="width: ${width}%; background: ${i.val > 0 ? '#ef4444' : '#3b82f6'};"></div>
                     </div>
@@ -1274,32 +1337,29 @@
 
         }
 
+        const publicAppUrl = 'https://jpg123.github.io/NF-mortality-calculator/';
+
         function shareResults() {
             const prob = document.getElementById('prob-val').innerText;
             const text = [
                 'NF Mortality Predictor Results',
                 `Predicted Risk: ${prob}`,
                 'Use status: Research only',
-                'Source: Standalone local file'
+                `App: ${publicAppUrl}`
             ].join('\n');
 
-            shareText('NF Mortality Predictor Results', text, 'Results summary copied to clipboard.');
+            shareText('NF Mortality Predictor Results', text, 'Results summary copied to clipboard.', publicAppUrl);
         }
 
         function shareApp() {
-            const message = [
-                'NF Mortality Predictor',
-                'Standalone local file',
-                'Open NF-mortality-calculator.html on this device to run the calculator.'
-            ].join('\n');
-
-            shareText('NF Mortality Predictor', message, 'App reference copied to clipboard.');
+            const message = `NF Mortality Predictor\n${publicAppUrl}`;
+            shareText('NF Mortality Predictor', message, 'App link copied to clipboard.', publicAppUrl);
         }
 
-        async function shareText(title, text, successMessage) {
+        async function shareText(title, text, successMessage, url = publicAppUrl) {
             try {
                 if (navigator.share) {
-                    await navigator.share({ title, text });
+                    await navigator.share({ title, text, url });
                     return;
                 }
             } catch (error) {

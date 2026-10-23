@@ -19,7 +19,9 @@ The calculator displays the estimated in-hospital mortality probability from its
 
 The linear predictor combines the fitted intercept and transformed input contributions. Blank laboratory values are omitted from the app calculation. Component contributions are descriptive parts of the implemented calculation, not causal effects.
 
-This research and education app is intended for the study population described in the companion manuscript. It is not a substitute for clinical assessment or local protocols. The model has not undergone external validation or prospective clinical evaluation.
+Risk categories are descriptive probability bands: below 15%, 15% to less than 50%, and 50% or above. These bands are not validated clinical decision thresholds. This research and education app is intended for the study population described in the companion manuscript. It is not a substitute for clinical assessment or local protocols. The model has not undergone external validation or prospective clinical evaluation.
+
+App source and coefficient files were reviewed on October 23, 2026. The review date does not indicate that the coefficients were newly fitted or clinically validated; see the dated submission audit for the unresolved analysis-to-app reproducibility issue.
 
 
 ## License
