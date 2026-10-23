@@ -5,7 +5,7 @@ This public repository contains the standalone NF mortality calculator app. Open
 ## Included
 
 - `index.html`: canonical app and embedded coefficient implementation
-- `data/study_data.json`: app model metadata and explanatory values
+- `data/study_data.json`: companion model metadata and coefficient audit file; the browser calculation uses the coefficient inventory embedded in `index.html`
 - `App_Explainer.html`: user-facing explanation of the app outputs
 - `manifest.json`, `icon.svg` and `sw.js`: installable-app metadata and offline support
 
@@ -21,7 +21,7 @@ The linear predictor combines the fitted intercept and transformed input contrib
 
 Risk categories are descriptive probability bands: below 15%, 15% to less than 50%, and 50% or above. These bands are not validated clinical decision thresholds. This research and education app is intended for the study population described in the companion manuscript. It is not a substitute for clinical assessment or local protocols. The model has not undergone external validation or prospective clinical evaluation.
 
-App source and coefficient files were reviewed on October 23, 2026. The review date does not indicate that the coefficients were newly fitted or clinically validated; see the dated submission audit for the unresolved analysis-to-app reproducibility issue.
+App source and coefficient files were reviewed on October 23, 2026. The review date does not indicate that the coefficients were newly fitted or clinically validated; see the dated submission audit for the unresolved analysis-to-app reproducibility issue. The calculator uses each `weight` value; the JSON `or` fields are not read by the app. The blood product receipt record has `or: 0.81`, while the exponential of its app coefficient (-0.168593) is approximately 0.85; the source of this unused OR metadata remains to be verified.
 
 
 ## License
